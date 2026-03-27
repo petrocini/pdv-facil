@@ -1,0 +1,80 @@
+{
+  "name": "criativa-pdv",
+  "version": "1.0.0",
+  "description": "PDV Offline Desktop",
+  "main": "dist/src/main/index.js",
+  "scripts": {
+    "dev": "tsc -p tsconfig.node.json && concurrently \"vite\" \"tsc -p tsconfig.node.json -w\" \"wait-on tcp:5173 && electron .\"",
+    "build": "prisma generate && tsc -p tsconfig.node.json && vite build",
+    "dist": "npm run build && electron-builder",
+    "postinstall": "prisma generate"
+  },
+  "build": {
+    "appId": "com.criativapdv.desktop",
+    "productName": "Criativa PDV",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist",
+      "prisma",
+      "node_modules/.prisma/**/*"
+    ],
+    "asarUnpack": [
+      "**/*.node",
+      "prisma/client/**/*",
+      "node_modules/@prisma/engines/**/*",
+      "node_modules/@prisma/client/**/*",
+      "node_modules/.prisma/**/*",
+      "node_modules/prisma/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Office"
+    }
+  },
+  "keywords": [],
+  "author": {
+    "name": "Criativa PDV",
+    "email": "contato@criativapdv.com"
+  },
+  "homepage": "https://criativapdv.com",
+  "license": "ISC",
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "^5.10.2",
+    "electron-log": "^5.4.3",
+    "lucide-react": "^0.577.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.71.2",
+    "react-router-dom": "^7.13.1",
+    "sharp": "^0.34.5",
+    "sonner": "^2.0.7",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^8.2.2",
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1",
+    "postcss": "^8.4.35",
+    "prisma": "^5.10.2",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.0",
+    "wait-on": "^7.2.0"
+  }
+}

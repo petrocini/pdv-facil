@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model categories {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  image_path  String?
+  products    products[]
+}
+
+model products {
+  id                   String                 @id @default(uuid())
+  category_id          String
+  name                 String
+  description          String?
+  base_price           Decimal
+  image_path           String?
+  category             categories             @relation(fields: [category_id], references: [id])
+  product_addon_groups product_addon_groups[]
+  order_items          order_items[]
+}
+
+model addon_groups {
+  id                   String                 @id @default(uuid())
+  name                 String
+  description          String?
+  addons               addons[]
+  product_addon_groups product_addon_groups[]
+}
+
+model addons {
+  id                String              @id @default(uuid())
+  addon_group_id    String
+  name              String
+  image_path        String?
+  price             Decimal
+  addon_group       addon_groups        @relation(fields: [addon_group_id], references: [id])
+  order_item_addons order_item_addons[]
+}
+
+model product_addon_groups {
+  id             String       @id @default(uuid())
+  product_id     String
+  addon_group_id String
+  min_selections Int          @default(0)
+  max_selections Int
+  sort_order     Int          @default(0)
+  product        products     @relation(fields: [product_id], references: [id])
+  addon_group    addon_groups @relation(fields: [addon_group_id], references: [id])
+}
+
+model orders {
+  id             String        @id @default(uuid())
+  ticket_number  Int
+  created_at     DateTime      @default(now())
+  total_amount   Decimal
+  status         String        @default("Aberto")
+  cancel_reason  String?
+  payment_method String?
+  order_items    order_items[]
+}
+
+model order_items {
+  id                String              @id @default(uuid())
+  order_id          String
+  product_id        String
+  quantity          Int
+  unit_price        Decimal
+  order             orders              @relation(fields: [order_id], references: [id])
+  product           products            @relation(fields: [product_id], references: [id])
+  order_item_addons order_item_addons[]
+}
+
+model order_item_addons {
+  id            String      @id @default(uuid())
+  order_item_id String
+  addon_id      String
+  quantity      Int
+  charged_price Decimal
+  order_item    order_items @relation(fields: [order_item_id], references: [id])
+  addon         addons      @relation(fields: [addon_id], references: [id])
+}
+
+model settings {
+  id               String   @id @default(uuid())
+  company_name     String?
+  company_document String?
+  logo_path        String?
+  images_directory String?
+  updated_at       DateTime @updatedAt
+}

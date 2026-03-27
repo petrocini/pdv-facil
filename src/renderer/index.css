@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-gray-900 bg-gray-50;
+  }
+}
+
+.print-receipt {
+  display: none;
+}
+
+@media print {
+  /* Oculta totalmente o aplicativo principal */
+  #root {
+    display: none !important;
+  }
+  
+  /* Exibe somente o recibo que foi injetado pelo portal no body */
+  .print-receipt {
+    display: block !important;
+    width: 80mm;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.print-kitchen .print-hide-kitchen {
+    display: none !important;
+  }
+}

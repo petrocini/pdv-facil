@@ -1,0 +1,14 @@
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": SQLite database "pdv_database.sqlite" at "file:C:\Users\lucas\AppData\Roaming\criativa-pdv\pdv_database.sqlite"
+
+2 migrations found in prisma/migrations
+
+Error: SQLite database error
+database is locked
+   0: sql_schema_connector::sql_migration_persistence::initialize
+           with namespaces=None
+             at schema-engine\connectors\sql-schema-connector\src\sql_migration_persistence.rs:14
+   1: schema_core::state::ApplyMigrations
+             at schema-engine\core\src\state.rs:226
+
