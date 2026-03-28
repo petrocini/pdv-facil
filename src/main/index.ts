@@ -10,6 +10,7 @@ async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    icon: path.join(__dirname, '../../build/icons/icon.ico'),
     frame: process.platform === 'darwin',
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hidden' as const } : {}),
     webPreferences: {

@@ -9,7 +9,7 @@ export default function CustomTitleBar() {
     >
       <div className="flex items-center gap-3 px-4">
         <UtensilsCrossed size={16} className="text-blue-100" />
-        <span className="text-sm font-semibold text-white tracking-wide">Criativa PDV</span>
+        <span className="text-sm font-semibold text-white tracking-wide">PDV Fácil</span>
       </div>
 
       <div className="flex h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>

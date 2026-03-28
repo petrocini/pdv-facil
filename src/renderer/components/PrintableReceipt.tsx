@@ -26,7 +26,7 @@ export default function PrintableReceipt({ orderData, settings }: PrintableRecei
     <div className="print-receipt font-mono text-black text-sm bg-white">
       {/* Header (Customer Only) */}
       <div className="print-hide-kitchen text-center mb-4 pb-2 border-b border-black border-dashed">
-        <h1 className="font-bold text-lg mb-1">{settings?.company_name || 'CRIATIVA PDV'}</h1>
+        <h1 className="font-bold text-lg mb-1">{settings?.company_name || 'PDV FÁCIL'}</h1>
         {settings?.company_document ? <p className="text-sm font-semibold mb-1">CNPJ: {settings.company_document}</p> : null}
         <p className="text-xs">Documento Auxiliar de Venda</p>
         <p className="text-xs mb-2">NÃO É DOCUMENTO FISCAL</p>
