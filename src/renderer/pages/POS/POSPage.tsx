@@ -6,7 +6,7 @@ import { useCartStore } from '../../store/cartStore';
 
 export default function POSPage() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<any[]>([]); // Using any to quickly accommodate nested addon types
+  const [products, setProducts] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   
   const [loading, setLoading] = useState(true);

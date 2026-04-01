@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Save, FolderSearch, ImageIcon, Building } from 'lucide-react';
 import { toast } from 'sonner';
+import DocumentInput from '../../components/ui/DocumentInput';
 
 export default function Settings() {
   const [formData, setFormData] = useState({
@@ -119,13 +120,12 @@ export default function Settings() {
 
               <div>
                 <label htmlFor="company_document" className="block text-sm font-medium text-gray-700 mb-1">CPF ou CNPJ</label>
-                <input 
+                <DocumentInput 
                   id="company_document"
-                  name="company_document" 
                   value={formData.company_document} 
-                  onChange={handleChange} 
+                  onChange={(rawValue) => setFormData(prev => ({ ...prev, company_document: rawValue }))} 
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" 
-                  placeholder="00.000.000/0000-00" 
+                  placeholder="000.000.000-00" 
                 />
               </div>
 

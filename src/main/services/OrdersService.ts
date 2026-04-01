@@ -27,7 +27,6 @@ export const OrdersService = {
       const ticket_number = cartPayload.ticketNumber ? Number(cartPayload.ticketNumber) : auto_ticket_number;
       const payment_method = cartPayload.paymentMethod || null;
 
-      // Recalculate total from DB prices — never trust frontend values
       const { totalAmount, enrichedItems } = await PricingService.calculateOrderTotal(tx, cartPayload.items);
 
       const order = await tx.orders.create({
@@ -94,7 +93,6 @@ export const OrdersService = {
     if (filters?.dateFrom || filters?.dateTo) {
       where.created_at = {};
       if (filters.dateFrom) {
-        // Parse as local date to avoid UTC offset shifting to the wrong day
         const [y, m, d] = filters.dateFrom.split('-').map(Number);
         const from = new Date(y, m - 1, d, 0, 0, 0, 0);
         where.created_at.gte = from;

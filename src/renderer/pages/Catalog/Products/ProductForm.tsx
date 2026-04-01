@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, Trash2, Link as LinkIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import CurrencyInput from '../../../components/ui/CurrencyInput';
 import { useConfirmStore } from '../../../store/confirmStore';
 
 export default function ProductForm() {
@@ -16,7 +17,7 @@ export default function ProductForm() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    base_price: '',
+    base_price: 0,
     category_id: '',
     image_path: ''
   });
@@ -53,7 +54,7 @@ export default function ProductForm() {
       setFormData({
         name: response.data.name,
         description: response.data.description || '',
-        base_price: response.data.base_price.toString(),
+        base_price: Number(response.data.base_price),
         category_id: response.data.category_id,
         image_path: response.data.image_path || ''
       });
@@ -265,17 +266,12 @@ export default function ProductForm() {
               </div>
 
               <div>
-                <label htmlFor="base_price" className="block text-sm font-medium text-gray-700 mb-1">Preço Base (R$) *</label>
-                <input 
+                <label htmlFor="base_price" className="block text-sm font-medium text-gray-700 mb-1">Preço Base *</label>
+                <CurrencyInput 
                   id="base_price"
-                  name="base_price" 
-                  type="number"
-                  step="0.01"
-                  min="0"
                   value={formData.base_price} 
-                  onChange={handleChange} 
+                  onValueChange={(val) => setFormData(prev => ({ ...prev, base_price: val }))} 
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" 
-                  placeholder="0.00" 
                   required 
                 />
               </div>

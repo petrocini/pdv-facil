@@ -13,17 +13,92 @@
 }
 
 @media print {
+  @page {
+    margin: 0;
+    size: 80mm auto;
+  }
+
+  /* Aplica box-sizing em tudo na impressão para controle de largura */
+  * {
+    box-sizing: border-box !important;
+  }
+
   /* Oculta totalmente o aplicativo principal */
   #root {
     display: none !important;
   }
+
+  /* Container que simula a largura real do papel de 80mm */
+  .print-wrapper {
+    width: 80mm;
+    margin: 0 auto;
+    overflow: hidden;
+  }
   
-  /* Exibe somente o recibo que foi injetado pelo portal no body */
+  /* Área imprimível real de 70mm (seguro para a maioria das impressoras) */
   .print-receipt {
     display: block !important;
-    width: 80mm;
-    margin: 0;
-    padding: 0;
+    width: 70mm;
+    margin: 0 auto;
+    padding: 0 2mm 0 5mm; /* Margem esquerda de 5mm para EVITAR CORTE */
+    background: white;
+  }
+
+  /* Controle de prefixo "Senha" no recibo */
+  .kitchen-only-inline {
+    display: none;
+  }
+
+  body.print-kitchen .kitchen-only-inline {
+    display: inline;
+  }
+
+  body.print-kitchen .print-receipt {
+    display: block !important;
+    width: 70mm;
+    margin: 0 auto;
+    padding: 0 2mm 0 5mm;
+    padding-top: 0 !important;
+    font-size: 14pt;
+    color: black !important;
+  }
+
+  body.print-kitchen .print-receipt .senha-label,
+  body.print-kitchen .print-receipt .items-label {
+    display: none !important;
+  }
+
+  body.print-kitchen .print-receipt .ticket-container {
+    margin-bottom: 5px !important;
+    padding-bottom: 5px !important;
+    border-bottom-width: 1px !important;
+  }
+
+  body.print-kitchen .print-receipt .ticket-number {
+    font-size: 14pt !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+    text-align: left;
+  }
+
+  body.print-kitchen .print-receipt .item-row {
+    border-bottom: 2px dashed black;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  body.print-kitchen .print-receipt .addon-item {
+    font-size: 13pt;
+    margin-top: 2px;
+  }
+
+  /* Ajustes para evitar quebras de linha no rodapé do cliente */
+  .print-receipt .text-lg {
+    font-size: 1.1em !important;
+  }
+  
+  .print-receipt .text-sm {
+    font-size: 0.85em !important;
   }
 
   body.print-kitchen .print-hide-kitchen {

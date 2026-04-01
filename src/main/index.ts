@@ -27,7 +27,7 @@ async function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
     mainWindow.webContents.openDevTools();
-  } else if (isDev && !app.isPackaged) { // Fallback standard vite dev server
+  } else if (isDev && !app.isPackaged) {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
@@ -48,11 +48,7 @@ protocol.registerSchemesAsPrivileged([
 
 app.whenReady().then(() => {
   protocol.handle('local', async (request) => {
-    // Extract filename from the URL. When using a standard scheme,
-    // 'local://filename.webp' is parsed as host='filename.webp', pathname='/'.
-    // So we use the URL constructor to reliably get the parts.
     const parsed = new URL(request.url);
-    // The filename could be in the host (local://file.webp) or in the pathname (local:///file.webp)
     const filename = decodeURIComponent(parsed.hostname || parsed.pathname.replace(/^\/+/, ''));
 
 
