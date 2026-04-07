@@ -44,11 +44,17 @@ export default function PrintModal({ isOpen, onClose, orderData }: PrintModalPro
       document.body.classList.remove('print-kitchen');
     }
 
-    window.print();
+    setTimeout(async () => {
+      if (settings?.printer_name) {
+        await window.api.printer.printSilent({ deviceName: settings.printer_name });
+      } else {
+        window.print();
+      }
 
-    setTimeout(() => {
-      document.body.classList.remove('print-kitchen', 'print-customer');
-    }, 1000);
+      setTimeout(() => {
+        document.body.classList.remove('print-kitchen', 'print-customer');
+      }, 1000);
+    }, 150);
   };
 
   return (

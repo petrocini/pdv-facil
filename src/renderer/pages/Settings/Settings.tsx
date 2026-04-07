@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Save, FolderSearch, ImageIcon, Building } from 'lucide-react';
+import { Save, FolderSearch, ImageIcon, Building, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 import DocumentInput from '../../components/ui/DocumentInput';
 
@@ -8,14 +8,26 @@ export default function Settings() {
     company_name: '',
     company_document: '',
     logo_path: '',
-    images_directory: ''
+    images_directory: '',
+    printer_name: ''
   });
+  const [printers, setPrinters] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
     loadSettings();
+    loadPrinters();
   }, []);
+
+  const loadPrinters = async () => {
+    try {
+      const printerList = await window.api.printer.getPrinters();
+      setPrinters(printerList);
+    } catch (error) {
+      console.error('Falha ao buscar impressoras:', error);
+    }
+  };
 
   const loadSettings = async () => {
     try {
@@ -25,7 +37,8 @@ export default function Settings() {
           company_name: response.data.company_name || '',
           company_document: response.data.company_document || '',
           logo_path: response.data.logo_path || '',
-          images_directory: response.data.images_directory || ''
+          images_directory: response.data.images_directory || '',
+          printer_name: response.data.printer_name || ''
         });
       }
     } catch (error) {
@@ -193,6 +206,33 @@ export default function Settings() {
                     </button>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100 pt-8">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <Printer size={20} className="text-blue-600" />
+              Impressão Direta
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label htmlFor="printer_name" className="block text-sm font-medium text-gray-700 mb-1">Impressora Térmica</label>
+                <p className="text-xs text-gray-500 mb-2">Selecione para impressão silenciosa. Se em branco, abrirá a tela do sistema.</p>
+                <select
+                  id="printer_name"
+                  name="printer_name"
+                  value={formData.printer_name}
+                  onChange={(e: any) => handleChange(e)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900"
+                >
+                  <option value="">-- Abrir diálogo de impressão do sistema --</option>
+                  {printers.map((p) => (
+                    <option key={p.name} value={p.name}>
+                      {p.name} {p.isDefault ? '(Padrão)' : ''}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>

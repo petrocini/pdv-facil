@@ -190,6 +190,7 @@ exports.Prisma.SettingsScalarFieldEnum = {
   company_document: 'company_document',
   logo_path: 'logo_path',
   images_directory: 'images_directory',
+  printer_name: 'printer_name',
   updated_at: 'updated_at'
 };
 

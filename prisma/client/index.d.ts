@@ -9623,6 +9623,7 @@ export namespace Prisma {
     company_document: string | null
     logo_path: string | null
     images_directory: string | null
+    printer_name: string | null
     updated_at: Date | null
   }
 
@@ -9632,6 +9633,7 @@ export namespace Prisma {
     company_document: string | null
     logo_path: string | null
     images_directory: string | null
+    printer_name: string | null
     updated_at: Date | null
   }
 
@@ -9641,6 +9643,7 @@ export namespace Prisma {
     company_document: number
     logo_path: number
     images_directory: number
+    printer_name: number
     updated_at: number
     _all: number
   }
@@ -9652,6 +9655,7 @@ export namespace Prisma {
     company_document?: true
     logo_path?: true
     images_directory?: true
+    printer_name?: true
     updated_at?: true
   }
 
@@ -9661,6 +9665,7 @@ export namespace Prisma {
     company_document?: true
     logo_path?: true
     images_directory?: true
+    printer_name?: true
     updated_at?: true
   }
 
@@ -9670,6 +9675,7 @@ export namespace Prisma {
     company_document?: true
     logo_path?: true
     images_directory?: true
+    printer_name?: true
     updated_at?: true
     _all?: true
   }
@@ -9752,6 +9758,7 @@ export namespace Prisma {
     company_document: string | null
     logo_path: string | null
     images_directory: string | null
+    printer_name: string | null
     updated_at: Date
     _count: SettingsCountAggregateOutputType | null
     _min: SettingsMinAggregateOutputType | null
@@ -9778,6 +9785,7 @@ export namespace Prisma {
     company_document?: boolean
     logo_path?: boolean
     images_directory?: boolean
+    printer_name?: boolean
     updated_at?: boolean
   }, ExtArgs["result"]["settings"]>
 
@@ -9787,6 +9795,7 @@ export namespace Prisma {
     company_document?: boolean
     logo_path?: boolean
     images_directory?: boolean
+    printer_name?: boolean
     updated_at?: boolean
   }, ExtArgs["result"]["settings"]>
 
@@ -9796,6 +9805,7 @@ export namespace Prisma {
     company_document?: boolean
     logo_path?: boolean
     images_directory?: boolean
+    printer_name?: boolean
     updated_at?: boolean
   }
 
@@ -9809,6 +9819,7 @@ export namespace Prisma {
       company_document: string | null
       logo_path: string | null
       images_directory: string | null
+      printer_name: string | null
       updated_at: Date
     }, ExtArgs["result"]["settings"]>
     composites: {}
@@ -10208,6 +10219,7 @@ export namespace Prisma {
     readonly company_document: FieldRef<"settings", 'String'>
     readonly logo_path: FieldRef<"settings", 'String'>
     readonly images_directory: FieldRef<"settings", 'String'>
+    readonly printer_name: FieldRef<"settings", 'String'>
     readonly updated_at: FieldRef<"settings", 'DateTime'>
   }
     
@@ -10601,6 +10613,7 @@ export namespace Prisma {
     company_document: 'company_document',
     logo_path: 'logo_path',
     images_directory: 'images_directory',
+    printer_name: 'printer_name',
     updated_at: 'updated_at'
   };
 
@@ -11156,6 +11169,7 @@ export namespace Prisma {
     company_document?: StringNullableFilter<"settings"> | string | null
     logo_path?: StringNullableFilter<"settings"> | string | null
     images_directory?: StringNullableFilter<"settings"> | string | null
+    printer_name?: StringNullableFilter<"settings"> | string | null
     updated_at?: DateTimeFilter<"settings"> | Date | string
   }
 
@@ -11165,6 +11179,7 @@ export namespace Prisma {
     company_document?: SortOrderInput | SortOrder
     logo_path?: SortOrderInput | SortOrder
     images_directory?: SortOrderInput | SortOrder
+    printer_name?: SortOrderInput | SortOrder
     updated_at?: SortOrder
   }
 
@@ -11177,6 +11192,7 @@ export namespace Prisma {
     company_document?: StringNullableFilter<"settings"> | string | null
     logo_path?: StringNullableFilter<"settings"> | string | null
     images_directory?: StringNullableFilter<"settings"> | string | null
+    printer_name?: StringNullableFilter<"settings"> | string | null
     updated_at?: DateTimeFilter<"settings"> | Date | string
   }, "id">
 
@@ -11186,6 +11202,7 @@ export namespace Prisma {
     company_document?: SortOrderInput | SortOrder
     logo_path?: SortOrderInput | SortOrder
     images_directory?: SortOrderInput | SortOrder
+    printer_name?: SortOrderInput | SortOrder
     updated_at?: SortOrder
     _count?: settingsCountOrderByAggregateInput
     _max?: settingsMaxOrderByAggregateInput
@@ -11201,6 +11218,7 @@ export namespace Prisma {
     company_document?: StringNullableWithAggregatesFilter<"settings"> | string | null
     logo_path?: StringNullableWithAggregatesFilter<"settings"> | string | null
     images_directory?: StringNullableWithAggregatesFilter<"settings"> | string | null
+    printer_name?: StringNullableWithAggregatesFilter<"settings"> | string | null
     updated_at?: DateTimeWithAggregatesFilter<"settings"> | Date | string
   }
 
@@ -11689,6 +11707,7 @@ export namespace Prisma {
     company_document?: string | null
     logo_path?: string | null
     images_directory?: string | null
+    printer_name?: string | null
     updated_at?: Date | string
   }
 
@@ -11698,6 +11717,7 @@ export namespace Prisma {
     company_document?: string | null
     logo_path?: string | null
     images_directory?: string | null
+    printer_name?: string | null
     updated_at?: Date | string
   }
 
@@ -11707,6 +11727,7 @@ export namespace Prisma {
     company_document?: NullableStringFieldUpdateOperationsInput | string | null
     logo_path?: NullableStringFieldUpdateOperationsInput | string | null
     images_directory?: NullableStringFieldUpdateOperationsInput | string | null
+    printer_name?: NullableStringFieldUpdateOperationsInput | string | null
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11716,6 +11737,7 @@ export namespace Prisma {
     company_document?: NullableStringFieldUpdateOperationsInput | string | null
     logo_path?: NullableStringFieldUpdateOperationsInput | string | null
     images_directory?: NullableStringFieldUpdateOperationsInput | string | null
+    printer_name?: NullableStringFieldUpdateOperationsInput | string | null
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11725,6 +11747,7 @@ export namespace Prisma {
     company_document?: string | null
     logo_path?: string | null
     images_directory?: string | null
+    printer_name?: string | null
     updated_at?: Date | string
   }
 
@@ -11734,6 +11757,7 @@ export namespace Prisma {
     company_document?: NullableStringFieldUpdateOperationsInput | string | null
     logo_path?: NullableStringFieldUpdateOperationsInput | string | null
     images_directory?: NullableStringFieldUpdateOperationsInput | string | null
+    printer_name?: NullableStringFieldUpdateOperationsInput | string | null
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11743,6 +11767,7 @@ export namespace Prisma {
     company_document?: NullableStringFieldUpdateOperationsInput | string | null
     logo_path?: NullableStringFieldUpdateOperationsInput | string | null
     images_directory?: NullableStringFieldUpdateOperationsInput | string | null
+    printer_name?: NullableStringFieldUpdateOperationsInput | string | null
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -12231,6 +12256,7 @@ export namespace Prisma {
     company_document?: SortOrder
     logo_path?: SortOrder
     images_directory?: SortOrder
+    printer_name?: SortOrder
     updated_at?: SortOrder
   }
 
@@ -12240,6 +12266,7 @@ export namespace Prisma {
     company_document?: SortOrder
     logo_path?: SortOrder
     images_directory?: SortOrder
+    printer_name?: SortOrder
     updated_at?: SortOrder
   }
 
@@ -12249,6 +12276,7 @@ export namespace Prisma {
     company_document?: SortOrder
     logo_path?: SortOrder
     images_directory?: SortOrder
+    printer_name?: SortOrder
     updated_at?: SortOrder
   }
 

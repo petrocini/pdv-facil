@@ -3,8 +3,10 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { initializeDatabase, prisma } from './database/prisma';
 import logger from './lib/logger';
+import { UpdaterService } from './services/UpdaterService';
 
 let mainWindow: BrowserWindow | null = null;
+const updaterService = new UpdaterService();
 
 async function createWindow() {
   mainWindow = new BrowserWindow({
@@ -39,6 +41,10 @@ async function createWindow() {
     logger.info('Banco de dados SQLite inicializado no diretório userData.');
   } catch (error) {
     logger.error('Erro ao inicializar o banco:', error);
+  }
+
+  if (app.isPackaged && mainWindow) {
+    updaterService.init(mainWindow);
   }
 }
 
@@ -140,6 +146,7 @@ ipcMain.handle('dialog:selectDirectory', async () => {
 ipcMain.handle('image:upload', ImageController.upload);
 ipcMain.handle('dashboard:getMetrics', DashboardController.getMetrics);
 ipcMain.handle('dashboard:getTopItems', DashboardController.getTopItems);
+ipcMain.handle('dashboard:getChartData', DashboardController.getChartData);
 
 ipcMain.handle('orders:create', OrdersController.create);
 ipcMain.handle('orders:getNextTicketNumber', OrdersController.getNextTicketNumber);
@@ -174,4 +181,20 @@ ipcMain.handle('addons:delete', AddonController.delete);
 ipcMain.handle('productAddonGroups:getByProductId', ProductAddonGroupController.getByProductId);
 ipcMain.handle('productAddonGroups:saveLinks', ProductAddonGroupController.saveLinks);
 
+ipcMain.handle('printer:getPrinters', async (event) => {
+  return await event.sender.getPrintersAsync();
+});
 
+ipcMain.handle('printer:printSilent', async (event, options) => {
+  try {
+    event.sender.print({ 
+      silent: true, 
+      deviceName: options.deviceName,
+      margins: { marginType: 'printableArea' }
+    });
+    return { success: true };
+  } catch (e: any) {
+    logger.error('Erro na impressao silenciosa:', e);
+    return { success: false, error: e.message };
+  }
+});

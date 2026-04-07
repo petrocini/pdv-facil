@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { toast } from 'sonner';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import CategoryList from './pages/Catalog/Categories/CategoryList';
@@ -11,8 +12,24 @@ import AddonGroupForm from './pages/Catalog/Addons/AddonGroupForm';
 import POSPage from './pages/POS/POSPage';
 import OrderHistoryList from './pages/Orders/OrderHistoryList';
 import Settings from './pages/Settings/Settings';
+import Help from './pages/Help/Help';
 
 export default function App() {
+  useEffect(() => {
+    if (window.api?.updater) {
+      window.api.updater.onDownloaded((info: any) => {
+        toast.message(`Atualização baixada (v${info?.version || 'nova'})`, {
+          description: 'A aplicação será atualizada ao ser fechada, mas você pode aplicar a atualização imediatamente.',
+          duration: Infinity,
+          action: {
+            label: 'Reiniciar Agora',
+            onClick: () => window.api.updater.quitAndInstall(),
+          },
+        });
+      });
+    }
+  }, []);
+
   return (
     <HashRouter>
       <Routes>
@@ -31,6 +48,7 @@ export default function App() {
           <Route path="pos" element={<POSPage />} />
           <Route path="orders" element={<OrderHistoryList />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="help" element={<Help />} />
         </Route>
       </Routes>
     </HashRouter>

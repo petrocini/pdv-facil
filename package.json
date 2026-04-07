@@ -12,6 +12,13 @@
   "build": {
     "appId": "com.pdvfacil.desktop",
     "productName": "PDV Fácil",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "petrocini",
+        "repo": "pdv-facil"
+      }
+    ],
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -52,12 +59,14 @@
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^5.10.2",
     "electron-log": "^5.4.3",
+    "electron-updater": "^6.8.3",
     "lucide-react": "^0.577.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.71.2",
     "react-number-format": "^5.4.5",
     "react-router-dom": "^7.13.1",
+    "recharts": "^3.8.1",
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",
     "uuid": "^13.0.0",

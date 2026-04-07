@@ -57,7 +57,18 @@ contextBridge.exposeInMainWorld('api', {
     selectDirectory: () => ipcRenderer.invoke('dialog:selectDirectory')
   },
   dashboard: {
-    getMetrics: () => ipcRenderer.invoke('dashboard:getMetrics'),
-    getTopItems: () => ipcRenderer.invoke('dashboard:getTopItems')
+    getMetrics: (filters?: any) => ipcRenderer.invoke('dashboard:getMetrics', filters),
+    getTopItems: (filters?: any) => ipcRenderer.invoke('dashboard:getTopItems', filters),
+    getChartData: (filters?: any) => ipcRenderer.invoke('dashboard:getChartData', filters)
+  },
+  printer: {
+    getPrinters: () => ipcRenderer.invoke('printer:getPrinters'),
+    printSilent: (options: any) => ipcRenderer.invoke('printer:printSilent', options)
+  },
+  updater: {
+    quitAndInstall: () => ipcRenderer.invoke('updater:quitAndInstall'),
+    onDownloaded: (callback: (info: any) => void) => {
+      ipcRenderer.on('updater:downloaded', (_event, info) => callback(info));
+    }
   }
 });

@@ -95,5 +95,6 @@ model settings {
   company_document String?
   logo_path        String?
   images_directory String?
+  printer_name     String?
   updated_at       DateTime @updatedAt
 }

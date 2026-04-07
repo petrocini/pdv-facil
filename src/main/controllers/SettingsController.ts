@@ -31,7 +31,8 @@ export class SettingsController {
             company_name: data.company_name,
             company_document: data.company_document,
             logo_path: data.logo_path,
-            images_directory: data.images_directory
+            images_directory: data.images_directory,
+            printer_name: data.printer_name
           }
         });
       } else {
@@ -40,7 +41,8 @@ export class SettingsController {
             company_name: data.company_name,
             company_document: data.company_document,
             logo_path: data.logo_path,
-            images_directory: data.images_directory
+            images_directory: data.images_directory,
+            printer_name: data.printer_name
           }
         });
       }

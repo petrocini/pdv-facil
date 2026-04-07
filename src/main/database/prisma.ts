@@ -30,4 +30,10 @@ export async function initializeDatabase() {
 
   await prisma.$connect();
   await prisma.$queryRawUnsafe(`PRAGMA journal_mode = WAL;`);
+
+  try {
+    await prisma.$queryRawUnsafe(`ALTER TABLE settings ADD COLUMN printer_name TEXT;`);
+  } catch (e) {
+    // A coluna já existe
+  }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, ShoppingCart, ListTree, Package, Settings, Layers } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, ListTree, Package, Settings, Layers, HelpCircle } from 'lucide-react';
 import CustomTitleBar from './CustomTitleBar';
 import { Toaster } from 'sonner';
 import ConfirmDialog from './ui/ConfirmDialog';
@@ -50,6 +50,9 @@ export default function Layout() {
             </div>
             <NavLink to="/settings" className={navLinkClasses}>
               <Settings size={20} /> Configurações
+            </NavLink>
+            <NavLink to="/help" className={navLinkClasses}>
+              <HelpCircle size={20} /> Ajuda
             </NavLink>
           </nav>
         </aside>
