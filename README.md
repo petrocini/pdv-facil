@@ -22,7 +22,7 @@
 
 - **Desktop Framework**: Electron 29.x
 - **Frontend**: React.js 18.x + Vite
-- **Banco de Dados**: SQLite (Modo WAL para alta resiliência)
+- **Banco de Dados**: SQLite
 - **ORM**: Prisma Client
 - **Estilização**: TailwindCSS
 - **Gerenciamento de Estado**: Zustand
@@ -85,7 +85,3 @@ O executável será gerado na pasta `release`.
 - **Logging Persistente**: Logs detalhados de operações sensíveis são gravados localmente para facilitar diagnósticos.
 
 ---
-
-## 📄 Licença
-
-Este projeto é para uso pessoal. Os direitos sobre o código e design pertencem ao autor.
