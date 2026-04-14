@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Layers } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Trash2, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirmStore } from '../../../store/confirmStore';
 
 export default function AddonGroupList() {
   const confirmDialog = useConfirmStore();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -92,9 +93,14 @@ export default function AddonGroupList() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {groups.map((group) => (
-                <tr key={group.id} className="hover:bg-gray-50/50 transition-colors group/item">
+                <tr
+                  key={group.id}
+                  onClick={() => navigate(`/addon-groups/${group.id}`)}
+                  className="hover:bg-blue-50/40 transition-colors cursor-pointer group/item"
+                  title="Clique para editar"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-semibold text-gray-900">{group.name}</div>
+                    <div className="font-semibold text-gray-900 group-hover/item:text-blue-700 transition-colors">{group.name}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{group.description || '-'}</div>
@@ -106,15 +112,8 @@ export default function AddonGroupList() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                     <div className="flex items-center justify-end gap-2">
-                      <Link 
-                        to={`/addon-groups/${group.id}`} 
-                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Editar"
-                      >
-                        <Edit2 size={18} />
-                      </Link>
                       <button 
-                        onClick={() => handleDelete(group.id)}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(group.id); }}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Excluir"
                       >

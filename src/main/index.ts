@@ -183,6 +183,7 @@ ipcMain.handle('products:getById', ProductController.getById);
 ipcMain.handle('products:create', ProductController.create);
 ipcMain.handle('products:update', ProductController.update);
 ipcMain.handle('products:delete', ProductController.delete);
+ipcMain.handle('products:clone', ProductController.clone);
 
 ipcMain.handle('addonGroups:getAll', AddonGroupController.getAll);
 ipcMain.handle('addonGroups:getById', AddonGroupController.getById);

@@ -63,6 +63,8 @@ O Criativa PDV é um aplicativo de Ponto de Venda (PDV) desktop offline-first, d
 | RF-16 | CRUD de Grupos de Adicionais e Adicionais individuais (nome, imagem, preço) | ✅ |
 | RF-17 | CRUD de Produtos (nome, descrição, preço base, imagem, categoria) | ✅ |
 | RF-18 | Vínculo N:N Produto ↔ Grupo de Adicionais com min/max/sort_order | ✅ |
+| RF-19.1 | **Interação Click-to-Edit**: clique na linha (tabela) abre edição diretamente, sem ícone de lápis | ✅ |
+| RF-22 | **Clonagem de Produto**: copia nome (com contador), categoria, imagem e vínculos de adicionais | ✅ |
 
 ### 3.5. Módulo: Configurações — ✅ Implementado
 
@@ -113,3 +115,29 @@ O banco SQLite utiliza Prisma ORM com as seguintes tabelas (nomenclatura `snake_
 | RNF-05 | Logs persistentes em arquivo para diagnóstico em produção | ✅ electron-log em `userData/logs/` |
 | RNF-06 | Integridade financeira: total calculado pelo backend | ✅ PricingService dentro de `$transaction` |
 | RNF-07 | Segurança IPC: `contextIsolation: true`, `nodeIntegration: false` | ✅ |
+
+---
+
+## 6. Fluxo de Interação do Usuário — Catálogo
+
+### 6.1. Padrão Click-to-Edit
+
+O padrão de interação nas listagens do catálogo (Produtos, Categorias, Grupos de Adicionais) foi revisado para eliminar o ícone de lápis e tornar a edição mais intuitiva:
+
+| Ação do Usuário | Comportamento do Sistema |
+|---|---|
+| Clica em qualquer célula da linha | Navega para a tela de edição do registro |
+| Hover sobre a linha | Destaque visual (fundo azul claro, nome em azul) |
+| Clica no botão Excluir (🗑) | Abre diálogo de confirmação; **não** navega para edição |
+| Clica no botão Clonar (🗐) — apenas Produtos | Abre diálogo de confirmação de clonagem |
+
+### 6.2. Fluxo de Clonagem de Produto
+
+1. O usuário clica em **Clonar** (ícone `Copy2`, violeta) na linha do produto desejado.
+2. Um diálogo de confirmação exibe o nome do produto e avisa que categoria, imagem e adicionais serão copiados.
+3. Ao confirmar, o sistema chama `window.api.products.clone(id)`.
+4. O backend determina o nome do clone usando a convenção de contadores:
+   - "Produto A" → "Produto A (2)" → "Produto A (3)" ...
+5. O produto clonado é inserido com os vínculos de grupos de adicionais replicados.
+6. Uma notificação de sucesso (`toast`) exibe o nome do novo produto.
+7. A lista é recarregada automaticamente.

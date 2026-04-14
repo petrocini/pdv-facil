@@ -23,7 +23,8 @@ contextBridge.exposeInMainWorld('api', {
     getById: (id: string) => ipcRenderer.invoke('products:getById', id),
     create: (data: any) => ipcRenderer.invoke('products:create', data),
     update: (id: string, data: any) => ipcRenderer.invoke('products:update', id, data),
-    delete: (id: string) => ipcRenderer.invoke('products:delete', id)
+    delete: (id: string) => ipcRenderer.invoke('products:delete', id),
+    clone: (id: string) => ipcRenderer.invoke('products:clone', id)
   },
   addonGroups: {
     getAll: () => ipcRenderer.invoke('addonGroups:getAll'),

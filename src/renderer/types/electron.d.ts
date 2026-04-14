@@ -41,6 +41,7 @@ declare global {
         create: (data: any) => Promise<ApiResponse<Product>>;
         update: (id: string, data: any) => Promise<ApiResponse<Product>>;
         delete: (id: string) => Promise<ApiResponse<void>>;
+        clone: (id: string) => Promise<ApiResponse<Product>>;
       };
       addonGroups: {
         getAll: () => Promise<ApiResponse<any[]>>;

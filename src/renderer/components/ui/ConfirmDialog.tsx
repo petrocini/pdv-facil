@@ -1,6 +1,6 @@
 import React from 'react';
 import { useConfirmStore } from '../../store/confirmStore';
-import { AlertCircle, Trash2, Info, X } from 'lucide-react';
+import { AlertCircle, Trash2, Info, Copy, X } from 'lucide-react';
 
 export default function ConfirmDialog() {
   const { isOpen, options, close } = useConfirmStore();
@@ -25,6 +25,8 @@ export default function ConfirmDialog() {
         return <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10"><Trash2 className="h-6 w-6 text-red-600" aria-hidden="true" /></div>;
       case 'warning':
         return <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 sm:mx-0 sm:h-10 sm:w-10"><AlertCircle className="h-6 w-6 text-orange-600" aria-hidden="true" /></div>;
+      case 'clone':
+        return <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 sm:mx-0 sm:h-10 sm:w-10"><Copy className="h-6 w-6 text-violet-600" aria-hidden="true" /></div>;
       default:
         return <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10"><Info className="h-6 w-6 text-blue-600" aria-hidden="true" /></div>;
     }
@@ -36,6 +38,8 @@ export default function ConfirmDialog() {
         return 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600';
       case 'warning':
         return 'bg-orange-600 hover:bg-orange-500 focus-visible:outline-orange-600';
+      case 'clone':
+        return 'bg-violet-600 hover:bg-violet-500 focus-visible:outline-violet-600';
       default:
         return 'bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600';
     }

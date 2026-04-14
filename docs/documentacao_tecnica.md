@@ -184,3 +184,80 @@ interface ApiResponse<T = any> {
 ```
 
 Objetos Prisma são serializados via `JSON.parse(JSON.stringify(...))` antes de cruzar a ponte IPC, evitando vazamento de metadados do ORM para o Renderer.
+
+---
+
+## 10. Padrões de Interação do Catálogo
+
+### 10.1. Click-to-Edit (Edição por Clique na Linha)
+
+As telas de listagem do Catálogo (`ProductList`, `CategoryList`, `AddonGroupList`) adotam o padrão **Click-to-Edit**: o usuário clica em qualquer parte da linha (ou card) para navegar diretamente para a tela de edição do registro. O ícone de lápis de edição foi removido de todas as listagens.
+
+**Implementação:**
+
+- O elemento `<tr>` recebe `onClick={() => navigate('/products/:id')}` com `cursor-pointer` e um feedback visual de hover (`hover:bg-blue-50/40`).
+- O nome do registro aplica `group-hover:text-blue-700` para reforçar a ação.
+- Botões de ação na coluna "Ações" (ex.: Excluir, Clonar) chamam `e.stopPropagation()` para evitar que o clique no botão dispare a navegação da linha.
+
+```tsx
+// Exemplo em ProductList.tsx
+<tr onClick={() => navigate(`/products/${product.id}`)} className="cursor-pointer group">
+  ...
+  <button onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }}>
+    <Trash2 />
+  </button>
+</tr>
+```
+
+### 10.2. Clonagem de Produtos
+
+#### Funcionalidade
+
+O botão **Clonar** (`Copy2` icon, cor violeta) na listagem de Produtos cria uma cópia completa de um produto, incluindo:
+
+- Categoria (`category_id`)
+- Imagem (`image_path`)
+- Todos os vínculos de Grupos de Adicionais (`product_addon_groups`) com seus `min_selections`, `max_selections` e `sort_order`
+
+#### Convenção de Nomes
+
+O algoritmo determina o próximo nome disponível seguindo:
+
+1. Se o produto original não tem sufixo `(N)`, o nome base é o nome do produto.
+2. Se já tem sufixo (é um clone existente), o nome base é extraído via regex: `/^(.*)\s\((\d+)\)$/`.
+3. Busca todos os produtos com `name STARTSWITH baseName`.
+4. Encontra o maior contador `N` existente (o produto original conta como 1).
+5. O novo clone recebe `"${baseName} (N+1)"`.
+
+**Exemplos:**
+
+| Ação | Resultado |
+|---|---|
+| Clonar "X-Bacon" | "X-Bacon (2)" |
+| Clonar "X-Bacon (2)" | "X-Bacon (3)" |
+| Clonar "X-Bacon (3)" com (2) e (3) já existentes | "X-Bacon (4)" |
+
+#### Fluxo IPC
+
+```
+Frontend: window.api.products.clone(productId)
+Preload:  products: { clone: (id) => ipcRenderer.invoke('products:clone', id) }
+Main:     ipcMain.handle('products:clone', ProductController.clone)
+          └─> ProductService.clone(id)
+              ├── prisma.products.findUnique (com product_addon_groups)
+              ├── prisma.products.findMany (para calcular nome)
+              ├── prisma.products.create (clone)
+              └── ProductAddonGroupService.saveLinks (replica vínculos)
+```
+
+#### Arquivos Modificados
+
+| Arquivo | Alteração |
+|---|---|
+| `ProductService.ts` | Método `clone()` adicionado |
+| `ProductController.ts` | Handler `clone()` adicionado |
+| `main/index.ts` | `ipcMain.handle('products:clone', ...)` registrado |
+| `preload/index.ts` | `products.clone` exposto via `contextBridge` |
+| `electron.d.ts` | Tipagem `clone` adicionada ao namespace `products` |
+| `ProductList.tsx` | Botão Clonar + Click-to-Edit |
+

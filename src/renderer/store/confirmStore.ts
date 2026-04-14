@@ -7,7 +7,7 @@ interface ConfirmOptions {
   cancelText?: string;
   onConfirm: () => void;
   onCancel?: () => void;
-  variant?: 'danger' | 'warning' | 'info';
+  variant?: 'danger' | 'warning' | 'info' | 'clone';
 }
 
 interface ConfirmStore {

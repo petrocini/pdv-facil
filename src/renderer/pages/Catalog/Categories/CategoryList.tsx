@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Image as ImageIcon, ListTree } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Trash2, Image as ImageIcon, ListTree } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirmStore } from '../../../store/confirmStore';
 
 export default function CategoryList() {
   const confirmDialog = useConfirmStore();
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -92,7 +93,12 @@ export default function CategoryList() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {categories.map((category) => (
-                <tr key={category.id} className="hover:bg-gray-50/50 transition-colors group">
+                <tr
+                  key={category.id}
+                  onClick={() => navigate(`/categories/${category.id}`)}
+                  className="hover:bg-blue-50/40 transition-colors cursor-pointer group"
+                  title="Clique para editar"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     {category.image_path ? (
                       <div className="h-12 w-12 rounded-xl border border-gray-200 overflow-hidden bg-white">
@@ -105,22 +111,15 @@ export default function CategoryList() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-semibold text-gray-900">{category.name}</div>
+                    <div className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{category.name}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{category.description || '-'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                     <div className="flex items-center justify-end gap-2">
-                      <Link 
-                        to={`/categories/${category.id}`} 
-                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Editar"
-                      >
-                        <Edit2 size={18} />
-                      </Link>
                       <button 
-                        onClick={() => handleDelete(category.id)}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Excluir"
                       >

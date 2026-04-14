@@ -53,5 +53,14 @@ export const ProductController = {
     } catch (error: any) {
       return { success: false, error: error.message };
     }
+  },
+
+  async clone(_event: any, id: string) {
+    try {
+      const product = await ProductService.clone(id);
+      return { success: true, data: JSON.parse(JSON.stringify(product)) };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
   }
 };

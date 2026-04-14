@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Package } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Trash2, Package, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirmStore } from '../../../store/confirmStore';
 
 export default function ProductList() {
   const confirmDialog = useConfirmStore();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +44,26 @@ export default function ProductList() {
           loadProducts();
         } else {
           toast.error('Erro ao deletar: ' + response.error);
+        }
+      }
+    });
+  };
+
+  const handleClone = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    confirmDialog.confirm({
+      title: 'Clonar Produto',
+      message: `Deseja criar uma cópia de "${product.name}"? A categoria, imagem e grupos de adicionais serão copiados.`,
+      confirmText: 'Clonar',
+      cancelText: 'Cancelar',
+      variant: 'clone',
+      onConfirm: async () => {
+        const response = await window.api.products.clone(product.id);
+        if (response.success) {
+          toast.success(`Produto "${response.data?.name}" criado com sucesso!`);
+          loadProducts();
+        } else {
+          toast.error('Erro ao clonar produto: ' + response.error);
         }
       }
     });
@@ -92,7 +113,12 @@ export default function ProductList() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
+                <tr
+                  key={product.id}
+                  onClick={() => navigate(`/products/${product.id}`)}
+                  className="hover:bg-blue-50/40 transition-colors cursor-pointer group"
+                  title="Clique para editar"
+                >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       {product.image_path ? (
@@ -105,7 +131,7 @@ export default function ProductList() {
                         </div>
                       )}
                       <div>
-                        <div className="font-semibold text-gray-900">{product.name}</div>
+                        <div className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">{product.name}</div>
                         <div className="text-xs text-gray-500 line-clamp-1 max-w-[200px]">{product.description || '-'}</div>
                       </div>
                     </div>
@@ -122,15 +148,15 @@ export default function ProductList() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                     <div className="flex items-center justify-end gap-2">
-                      <Link 
-                        to={`/products/${product.id}`} 
-                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Editar"
+                      <button
+                        onClick={(e) => handleClone(e, product)}
+                        className="p-2 text-gray-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+                        title="Clonar Produto"
                       >
-                        <Edit2 size={18} />
-                      </Link>
+                        <Copy size={18} />
+                      </button>
                       <button 
-                        onClick={() => handleDelete(product.id)}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(product.id); }}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Excluir"
                       >
