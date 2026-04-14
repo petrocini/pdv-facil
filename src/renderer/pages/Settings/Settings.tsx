@@ -112,7 +112,7 @@ export default function Settings() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <form onSubmit={handleSubmit} className="p-8 space-y-8">
-          
+
           <div>
             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
               <Building size={20} className="text-blue-600" />
@@ -121,24 +121,24 @@ export default function Settings() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="company_name" className="block text-sm font-medium text-gray-700 mb-1">Nome da Empresa</label>
-                <input 
+                <input
                   id="company_name"
-                  name="company_name" 
-                  value={formData.company_name} 
-                  onChange={handleChange} 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" 
-                  placeholder="Ex: Lanchonete do Zé" 
+                  name="company_name"
+                  value={formData.company_name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  placeholder="Ex: Lanchonete do Zé"
                 />
               </div>
 
               <div>
                 <label htmlFor="company_document" className="block text-sm font-medium text-gray-700 mb-1">CPF ou CNPJ</label>
-                <DocumentInput 
+                <DocumentInput
                   id="company_document"
-                  value={formData.company_document} 
-                  onChange={(rawValue) => setFormData(prev => ({ ...prev, company_document: rawValue }))} 
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" 
-                  placeholder="000.000.000-00" 
+                  value={formData.company_document}
+                  onChange={(rawValue) => setFormData(prev => ({ ...prev, company_document: rawValue }))}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  placeholder="000.000.000-00"
                 />
               </div>
 
@@ -153,18 +153,18 @@ export default function Settings() {
                     )}
                   </div>
                   <div className="flex flex-col gap-2">
-                     <label htmlFor="logo_upload" className="cursor-pointer bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors inline-flex items-center gap-2 max-w-max">
-                        <ImageIcon size={16} />
-                        Escolher Logotipo
-                     </label>
-                     <input 
-                       id="logo_upload"
-                       type="file" 
-                       accept="image/*"
-                       onChange={handleLogoUpload} 
-                       className="hidden" 
-                     />
-                     <span className="text-xs text-gray-500">Formato recomendado: PNG, JPG, WEBP.</span>
+                    <label htmlFor="logo_upload" className="cursor-pointer bg-white px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors inline-flex items-center gap-2 max-w-max">
+                      <ImageIcon size={16} />
+                      Escolher Logotipo
+                    </label>
+                    <input
+                      id="logo_upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                      className="hidden"
+                    />
+                    <span className="text-xs text-gray-500">Formato recomendado: PNG, JPG, WEBP.</span>
                   </div>
                 </div>
               </div>
@@ -181,25 +181,25 @@ export default function Settings() {
                 <label htmlFor="images_directory" className="block text-sm font-medium text-gray-700 mb-1">Diretório de Imagens (Opcional)</label>
                 <p className="text-xs text-gray-500 mb-2">Por padrão as imagens são salvas num diretório oculto. Altere caso queira salvá-las em outra pasta no PC.</p>
                 <div className="flex items-center gap-2">
-                  <input 
+                  <input
                     id="images_directory"
-                    name="images_directory" 
-                    value={formData.images_directory} 
+                    name="images_directory"
+                    value={formData.images_directory}
                     readOnly
-                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-600" 
-                    placeholder="Diretório padrão de usuário" 
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-600"
+                    placeholder="Diretório padrão de usuário"
                   />
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={handleSelectDirectory}
                     className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 rounded-xl transition-colors font-medium whitespace-nowrap"
                   >
                     Selecionar Pasta
                   </button>
                   {formData.images_directory && (
-                    <button 
-                      type="button" 
-                      onClick={() => setFormData(prev => ({...prev, images_directory: ''}))}
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, images_directory: '' }))}
                       className="px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 rounded-xl transition-colors font-medium whitespace-nowrap"
                     >
                       Limpar
@@ -226,7 +226,7 @@ export default function Settings() {
                   onChange={(e: any) => handleChange(e)}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900"
                 >
-                  <option value="">-- Abrir diálogo de impressão do sistema --</option>
+                  <option value="">-- Selecione a impressora padrão do sistema --</option>
                   {printers.map((p) => (
                     <option key={p.name} value={p.name}>
                       {p.name} {p.isDefault ? '(Padrão)' : ''}
@@ -238,8 +238,8 @@ export default function Settings() {
           </div>
 
           <div className="border-t border-gray-100 pt-6 flex justify-end">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
             >

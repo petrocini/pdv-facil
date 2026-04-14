@@ -24,23 +24,39 @@ export default function DocumentInput({
   placeholder = '000.000.000-00',
   disabled = false,
 }: DocumentInputProps) {
-  // Strip any non-digit characters to determine the current mask
-  const rawDigits = (value || '').replace(/\D/g, '');
-  const isCNPJ = rawDigits.length > 11;
-  const format = isCNPJ ? '##.###.###/####-##' : '###.###.###-##';
+  
+  const applyMask = (v: string) => {
+    let raw = v.replace(/\D/g, '');
+    if (raw.length <= 11) {
+      raw = raw.replace(/(\d{3})(\d)/, '$1.$2');
+      raw = raw.replace(/(\d{3})(\d)/, '$1.$2');
+      raw = raw.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      return raw;
+    } else {
+      // CNPJ limit to 14 digits
+      raw = raw.substring(0, 14);
+      raw = raw.replace(/^(\d{2})(\d)/, '$1.$2');
+      raw = raw.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      raw = raw.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      raw = raw.replace(/(\d{4})(\d)/, '$1-$2');
+      return raw;
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, '').substring(0, 14);
+    onChange(rawValue);
+  };
 
   return (
-    <PatternFormat
+    <input
       id={id}
-      format={format}
-      mask="_"
-      value={rawDigits}
-      onValueChange={(values) => {
-        onChange(values.value);
-      }}
+      value={applyMask(value || '')}
+      onChange={handleChange}
       className={className}
       placeholder={placeholder}
       disabled={disabled}
+      maxLength={18} // 14 numbers + 4 formatting symbols
     />
   );
 }

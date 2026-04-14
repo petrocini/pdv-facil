@@ -16,7 +16,7 @@ function getDateRange(filters?: { startDate?: string; endDate?: string }) {
 }
 
 export const DashboardService = {
-  async getMetrics(filters?: { startDate?: string; endDate?: string }) {
+  async getMetrics(filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
     const { start, end } = getDateRange(filters);
 
     const orders = await prisma.orders.findMany({
@@ -27,7 +27,8 @@ export const DashboardService = {
         },
         status: {
           not: 'Cancelado'
-        }
+        },
+        ...(filters?.paymentMethod ? { payment_method: filters.paymentMethod } : {})
       },
       select: {
         total_amount: true,
@@ -50,7 +51,7 @@ export const DashboardService = {
     };
   },
 
-  async getTopItems(filters?: { startDate?: string; endDate?: string }) {
+  async getTopItems(filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
     const { start, end } = getDateRange(filters);
 
     const topItems = await prisma.order_items.groupBy({
@@ -63,7 +64,8 @@ export const DashboardService = {
           },
           status: {
             not: 'Cancelado'
-          }
+          },
+          ...(filters?.paymentMethod ? { payment_method: filters.paymentMethod } : {})
         }
       },
       _sum: {
@@ -93,7 +95,7 @@ export const DashboardService = {
     return enrichedTopItems;
   },
 
-  async getChartData(filters?: { startDate?: string; endDate?: string }) {
+  async getChartData(filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
     const { start, end } = getDateRange(filters);
 
     const orders = await prisma.orders.findMany({
@@ -104,7 +106,8 @@ export const DashboardService = {
         },
         status: {
           not: 'Cancelado'
-        }
+        },
+        ...(filters?.paymentMethod ? { payment_method: filters.paymentMethod } : {})
       },
       select: {
         created_at: true,
@@ -146,5 +149,43 @@ export const DashboardService = {
       name: key,
       total: Number(groupedData[key].toFixed(2)) // Format money to 2 decimals
     }));
+  },
+
+  async getSalesByPaymentMethod(filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
+    const { start, end } = getDateRange(filters);
+
+    const orders = await prisma.orders.findMany({
+      where: {
+        created_at: {
+          gte: start,
+          lte: end,
+        },
+        status: {
+          not: 'Cancelado'
+        },
+        payment_method: {
+          not: null
+        }
+      },
+      select: {
+        payment_method: true,
+        total_amount: true,
+      }
+    });
+
+    const groupedData: Record<string, number> = {};
+
+    for (const order of orders) {
+      const method = order.payment_method || 'Outro';
+      if (!groupedData[method]) {
+        groupedData[method] = 0;
+      }
+      groupedData[method] += Number(order.total_amount);
+    }
+
+    return Object.keys(groupedData).map(key => ({
+      method: key,
+      total: Number(groupedData[key].toFixed(2))
+    })).sort((a, b) => b.total - a.total);
   }
 };

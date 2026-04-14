@@ -48,8 +48,8 @@ export default function App() {
           <Route path="pos" element={<POSPage />} />
           <Route path="orders" element={<OrderHistoryList />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="help" element={<Help />} />
         </Route>
+        <Route path="/help" element={<Help />} />
       </Routes>
     </HashRouter>
   );

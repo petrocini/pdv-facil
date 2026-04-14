@@ -51,7 +51,7 @@ export default function OrderDetailsModal({ orderId, onClose, onOrderCancelled }
         onOrderCancelled();
         toast.success('Pedido cancelado com sucesso.');
       } else {
-        toast.error(res.error || 'Failed to cancel order.');
+        toast.error(res.error || 'Falha ao cancelar o pedido.');
       }
     } catch (e) {
       console.error(e);

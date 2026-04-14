@@ -2,7 +2,7 @@ import { DashboardService } from '../services/DashboardService';
 import logger from '../lib/logger';
 
 export const DashboardController = {
-  async getMetrics(event: any, filters?: { startDate?: string; endDate?: string }) {
+  async getMetrics(event: any, filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
     try {
       const data = await DashboardService.getMetrics(filters);
       return { success: true, data };
@@ -12,7 +12,7 @@ export const DashboardController = {
     }
   },
 
-  async getTopItems(event: any, filters?: { startDate?: string; endDate?: string }) {
+  async getTopItems(event: any, filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
     try {
       const data = await DashboardService.getTopItems(filters);
       return { success: true, data };
@@ -22,12 +22,22 @@ export const DashboardController = {
     }
   },
 
-  async getChartData(event: any, filters?: { startDate?: string; endDate?: string }) {
+  async getChartData(event: any, filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
     try {
       const data = await DashboardService.getChartData(filters);
       return { success: true, data };
     } catch (error: any) {
       logger.error('Error fetching dashboard chart data:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async getSalesByPaymentMethod(event: any, filters?: { startDate?: string; endDate?: string; paymentMethod?: string }) {
+    try {
+      const data = await DashboardService.getSalesByPaymentMethod(filters);
+      return { success: true, data };
+    } catch (error: any) {
+      logger.error('Error fetching dashboard sales by payment method:', error);
       return { success: false, error: error.message };
     }
   }

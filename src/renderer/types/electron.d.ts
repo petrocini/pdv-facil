@@ -62,6 +62,12 @@ declare global {
       orders: {
         create: (cartPayload: any) => Promise<ApiResponse<any>>;
       };
+      dashboard: {
+        getMetrics: (filters?: any) => Promise<ApiResponse<any>>;
+        getTopItems: (filters?: any) => Promise<ApiResponse<any>>;
+        getChartData: (filters?: any) => Promise<ApiResponse<any>>;
+        getSalesByPaymentMethod: (filters?: any) => Promise<ApiResponse<any>>;
+      };
       updater: {
         quitAndInstall: () => Promise<void>;
         onDownloaded: (callback: (info: any) => void) => void;

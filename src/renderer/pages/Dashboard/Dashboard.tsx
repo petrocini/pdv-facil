@@ -18,6 +18,11 @@ interface ChartItem {
   total: number;
 }
 
+interface PaymentMethodItem {
+  method: string;
+  total: number;
+}
+
 export default function Dashboard() {
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     totalRevenue: 0,
@@ -26,10 +31,12 @@ export default function Dashboard() {
   });
   const [topItems, setTopItems] = useState<TopItem[]>([]);
   const [chartData, setChartData] = useState<ChartItem[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   const loadData = async () => {
     try {
@@ -37,6 +44,7 @@ export default function Dashboard() {
       const filters = {
         startDate: startDate ? new Date(startDate).toISOString() : undefined,
         endDate: endDate ? new Date(endDate).toISOString() : undefined,
+        paymentMethod: paymentMethod || undefined,
       };
 
       // @ts-ignore
@@ -55,6 +63,12 @@ export default function Dashboard() {
       const chartResponse = await window.api.dashboard.getChartData(filters);
       if (chartResponse.success) {
         setChartData(chartResponse.data);
+      }
+
+      // @ts-ignore
+      const paymentResponse = await window.api.dashboard.getSalesByPaymentMethod(filters);
+      if (paymentResponse.success) {
+        setPaymentMethods(paymentResponse.data);
       }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
@@ -97,6 +111,19 @@ export default function Dashboard() {
               onChange={(e) => setEndDate(e.target.value)}
               className="text-sm border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
             />
+          </div>
+          <div className="flex items-center gap-2">
+            <select
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              className="text-sm border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+            >
+              <option value="">Todas as formas</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="PIX">PIX</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+            </select>
           </div>
           <button 
             onClick={loadData}
@@ -264,6 +291,47 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Vendas por Forma de Pagamento */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 flex flex-col">
+        <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center space-x-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pink-500"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          <span>Vendas por Forma de Pagamento</span>
+        </h3>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-28 bg-slate-100 animate-pulse rounded-xl"></div>
+            ))}
+          </div>
+        ) : paymentMethods.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {paymentMethods.map((pm, index) => {
+              const percentage = metrics.totalRevenue > 0 ? (pm.total / metrics.totalRevenue) * 100 : 0;
+              return (
+                <div key={index} className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col justify-between group hover:border-pink-200 transition-colors">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium text-slate-700">{pm.method}</span>
+                    <span className="text-xs font-semibold text-slate-500 bg-slate-200/50 px-2 py-0.5 rounded-full group-hover:bg-pink-100 group-hover:text-pink-600 transition-colors">{percentage.toFixed(1)}%</span>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-slate-900">{formatCurrency(pm.total)}</p>
+                  </div>
+                  <div className="mt-4 w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-pink-500 h-1.5 rounded-full transition-all duration-1000 ease-out" style={{ width: `${percentage}%` }}></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-col justify-center items-center text-center space-y-3 opacity-60 py-6">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-slate-400"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <p className="text-sm text-slate-500">Nenhum dado de pagamento neste período.</p>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

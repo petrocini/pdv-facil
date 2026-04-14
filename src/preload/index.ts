@@ -59,7 +59,8 @@ contextBridge.exposeInMainWorld('api', {
   dashboard: {
     getMetrics: (filters?: any) => ipcRenderer.invoke('dashboard:getMetrics', filters),
     getTopItems: (filters?: any) => ipcRenderer.invoke('dashboard:getTopItems', filters),
-    getChartData: (filters?: any) => ipcRenderer.invoke('dashboard:getChartData', filters)
+    getChartData: (filters?: any) => ipcRenderer.invoke('dashboard:getChartData', filters),
+    getSalesByPaymentMethod: (filters?: any) => ipcRenderer.invoke('dashboard:getSalesByPaymentMethod', filters)
   },
   printer: {
     getPrinters: () => ipcRenderer.invoke('printer:getPrinters'),

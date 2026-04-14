@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Info, ShoppingCart, Layers, Package, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Info, ShoppingCart, Layers, Package, Settings, ArrowLeft } from 'lucide-react';
+import CustomTitleBar from '../../components/CustomTitleBar';
 import IntroHelp from './components/IntroHelp';
 import POSHelp from './components/POSHelp';
 import OrdersHelp from './components/OrdersHelp';
@@ -10,6 +12,7 @@ type HelpTab = 'intro' | 'pos' | 'orders' | 'catalog' | 'settings';
 
 export default function Help() {
   const [activeTab, setActiveTab] = useState<HelpTab>('intro');
+  const navigate = useNavigate();
 
   const tabs = [
     { id: 'intro', label: 'Introdução', icon: Info },
@@ -31,11 +34,23 @@ export default function Help() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg shadow-sm overflow-hidden">
-      <div className="border-b border-gray-200 px-8 py-6">
-        <h1 className="text-2xl font-bold text-gray-900">Central de Ajuda</h1>
-        <p className="text-gray-500 mt-1">Consulte os manuais de instrução de cada módulo do sistema.</p>
-      </div>
+    <div className="h-screen w-full flex flex-col bg-gray-50 overflow-hidden font-sans">
+      <CustomTitleBar />
+      
+      <div className="flex-1 flex flex-col bg-white overflow-hidden shadow-sm m-4 rounded-lg border border-gray-200">
+        <div className="border-b border-gray-200 px-8 py-6 flex items-center gap-4">
+          <button 
+            onClick={() => navigate('/')} 
+            className="p-2 -ml-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+            title="Voltar ao sistema"
+          >
+            <ArrowLeft size={24} />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Central de Ajuda</h1>
+            <p className="text-gray-500 mt-1">Consulte os manuais de instrução de cada módulo do sistema.</p>
+          </div>
+        </div>
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Help Navigation Sidebar */}
@@ -68,7 +83,8 @@ export default function Help() {
           <div className="max-w-4xl mx-auto">
             {renderContent()}
           </div>
-        </main>
+          </main>
+        </div>
       </div>
     </div>
   );

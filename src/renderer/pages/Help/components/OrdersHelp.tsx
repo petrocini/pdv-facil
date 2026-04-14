@@ -28,7 +28,7 @@ export default function OrdersHelp() {
 
         <h3 className="text-xl font-semibold text-gray-800 mt-6">Ações em um Pedido Existente</h3>
         <p>
-          Quando você clica no ícone de "olho" na lateral de um cardá do histórico, você abrirá a visualização completa sobre quais itens aquela venda possui:
+          Quando você clica no ícone de "olho" na lateral de um item do histórico, você abrirá a visualização completa sobre quais itens aquela venda possui:
         </p>
 
         <div className="bg-gray-100 p-4 rounded-md border border-gray-200 my-4 shadow-sm">

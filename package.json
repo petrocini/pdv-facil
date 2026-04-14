@@ -20,7 +20,7 @@
       }
     ],
     "directories": {
-      "output": "release",
+      "output": "build-release",
       "buildResources": "build"
     },
     "files": [

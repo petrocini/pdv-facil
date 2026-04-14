@@ -8,7 +8,7 @@ export default function CatalogHelp() {
         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
           <Package className="text-blue-600" /> Montando seu Catálogo
         </h2>
-        <p className="text-gray-500 mt-2">Como cadastrar categorias, produtos e adicionais obedecendo a árvore do banco.</p>
+        <p className="text-gray-500 mt-2">Como cadastrar categorias, produtos e adicionais obedecendo a estrutura correta do cardápio.</p>
       </div>
 
       <div className="prose prose-blue max-w-none text-gray-700 space-y-4">

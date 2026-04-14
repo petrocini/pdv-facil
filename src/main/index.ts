@@ -18,18 +18,28 @@ async function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      devTools: !app.isPackaged
     }
   });
 
   mainWindow.maximize();
 
+  if (app.isPackaged) {
+    mainWindow.setMenu(null);
+  }
+
+  // Previne que links com target="_blank" abram popups ou vazem da aplicação
+  mainWindow.webContents.setWindowOpenHandler(() => {
+    return { action: 'deny' };
+  });
+
   const isDev = process.env.NODE_ENV !== 'production';
 
-  if (process.env.VITE_DEV_SERVER_URL) {
+  if (!app.isPackaged && process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
     mainWindow.webContents.openDevTools();
-  } else if (isDev && !app.isPackaged) {
+  } else if (!app.isPackaged && isDev) {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
@@ -70,7 +80,13 @@ app.whenReady().then(() => {
       imagesDir = path.join(app.getPath('userData'), 'images');
     }
 
-    const absolutePath = path.join(imagesDir, filename);
+    const absolutePath = path.normalize(path.join(imagesDir, filename));
+    
+    // Mitigação contra Path Traversal (- ../../) exigindo que resolva sempre dentro de imagesDir
+    if (!absolutePath.startsWith(path.normalize(imagesDir))) {
+      return new Response('Acesso Negado (Path Traversal Detection)', { status: 403 });
+    }
+
     return net.fetch(pathToFileURL(absolutePath).toString());
   });
 
@@ -147,6 +163,7 @@ ipcMain.handle('image:upload', ImageController.upload);
 ipcMain.handle('dashboard:getMetrics', DashboardController.getMetrics);
 ipcMain.handle('dashboard:getTopItems', DashboardController.getTopItems);
 ipcMain.handle('dashboard:getChartData', DashboardController.getChartData);
+ipcMain.handle('dashboard:getSalesByPaymentMethod', DashboardController.getSalesByPaymentMethod);
 
 ipcMain.handle('orders:create', OrdersController.create);
 ipcMain.handle('orders:getNextTicketNumber', OrdersController.getNextTicketNumber);
@@ -187,8 +204,8 @@ ipcMain.handle('printer:getPrinters', async (event) => {
 
 ipcMain.handle('printer:printSilent', async (event, options) => {
   try {
-    event.sender.print({ 
-      silent: true, 
+    event.sender.print({
+      silent: true,
       deviceName: options.deviceName,
       margins: { marginType: 'printableArea' }
     });
