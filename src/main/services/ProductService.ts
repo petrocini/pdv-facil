@@ -59,7 +59,11 @@ export const ProductService = {
   },
 
   async delete(id: string) {
-    return prisma.products.delete({ where: { id } });
+    return prisma.$transaction(async (tx) => {
+      // Remove addon group links first to satisfy the foreign key constraint
+      await tx.product_addon_groups.deleteMany({ where: { product_id: id } });
+      return tx.products.delete({ where: { id } });
+    });
   },
 
   async clone(id: string) {

@@ -142,8 +142,8 @@ O `PricingService.calculateOrderTotal()` é executado dentro da `$transaction` d
 ## 6. Fluxo de Emissão de Pedidos
 
 1. O caixa navega para a tela PDV (`/pos`) e seleciona produtos do cardápio.
-2. Produtos com adicionais abrem o `AddonSelectionModal`, que valida `min_selections` / `max_selections` de cada grupo.
-3. Os itens são adicionados ao carrinho gerenciado pelo `cartStore` (Zustand).
+2. Produtos com adicionais abrem o `AddonSelectionModal`, que permite selecionar **quantidades** individuais de cada adicional via controles `+`/`-`, validando que a soma de quantidades não exceda `max_selections` do grupo.
+3. Os itens são adicionados ao carrinho gerenciado pelo `cartStore` (Zustand), com cada adicional carregando seu `quantity`.
 4. Ao clicar em "Finalizar Pedido", o `PaymentModal` abre e carrega a próxima senha de atendimento sugerida via IPC `orders:getNextTicketNumber`.
 5. O caixa escolhe o método de pagamento e confirma.
 6. O payload é enviado via `orders:create`. O `OrdersService` recalcula o total via `PricingService` dentro de uma `$transaction` e persiste o pedido.
@@ -261,3 +261,69 @@ Main:     ipcMain.handle('products:clone', ProductController.clone)
 | `electron.d.ts` | Tipagem `clone` adicionada ao namespace `products` |
 | `ProductList.tsx` | Botão Clonar + Click-to-Edit |
 
+
+### 10.3. Quantidades Múltiplas por Adicional
+
+#### Funcionalidade
+
+O `AddonSelectionModal` permite que o operador selecione **quantidades** de cada adicional individualmente (ex.: "5x Chocolate + 2x Granulado"), em vez de apenas marcar/desmarcar checkboxes. Cada adicional exibe controles `+` / `-` inline.
+
+#### Estrutura de Dados
+
+O estado interno do modal armazena as seleções num mapa bidimensional:
+
+```typescript
+// selected[groupId][addonId] = quantity
+const [selected, setSelected] = useState<Record<string, Record<string, number>>>();
+
+// Exemplo em runtime:
+{
+  "grupo-coberturas-uuid": {
+    "addon-chocolate-uuid": 5,
+    "addon-granulado-uuid": 2
+  }
+}
+```
+
+Ao confirmar, o modal converte para o formato `CartAddon[]` esperado pelo `cartStore`:
+
+```typescript
+interface CartAddon {
+  addonId: string;
+  name: string;
+  price: number;     // preço unitário do adicional
+  quantity: number;  // quantidade selecionada
+}
+```
+
+#### Regras de Validação
+
+| Regra | Implementação |
+|---|---|
+| Limite máximo por grupo | `sum(quantities) <= max_selections`. O botão `+` é desabilitado quando o limite é atingido. |
+| Mínimo obrigatório por grupo | `sum(quantities) >= min_selections`. O botão "Adicionar" permanece desabilitado até que todos os grupos obrigatórios sejam satisfeitos. |
+| Decremento mínimo | Ao atingir `0`, a chave do adicional é removida do estado. |
+
+#### Exibição em Tempo Real
+
+- Cada grupo exibe um badge `X / max` mostrando o total selecionado vs. o limite.
+- O preço do adicional exibe `+ R$ X,XX × N = R$ Y,YY` quando `N > 1`.
+- O total geral (base + adicionais × quantidades × quantidade do item) é recalculado em tempo real no footer.
+
+#### Fluxo Completo
+
+```
+AddonSelectionModal (increment/decrement por addon)
+  ↓ onAddToCart(quantity, CartAddon[])
+POSPage → cartStore.addItem({ addons: CartAddon[] })
+  ↓ Ao finalizar
+OrdersService.create → PricingService.calculateOrderTotal
+  ↓ Recalcula preços do DB, usa addon.quantity para multiplicar
+order_item_addons (quantity + charged_price persistidos)
+```
+
+#### Arquivos Modificados
+
+| Arquivo | Alteração |
+|---|---|
+| `AddonSelectionModal.tsx` | Refatorado: `handleAddonToggle` substituído por `handleIncrement` / `handleDecrement`. Layout alterado de grid de checkboxes para lista com controles `+`/`-` inline. Badge `X / max` adicionado ao cabeçalho do grupo. |

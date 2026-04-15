@@ -12,6 +12,7 @@ interface AddonSelectionModalProps {
 export default function AddonSelectionModal({ isOpen, onClose, product, onAddToCart }: AddonSelectionModalProps) {
   const [quantity, setQuantity] = useState(1);
   
+  // selected[groupId][addonId] = quantity (0 means not selected)
   const [selected, setSelected] = useState<Record<string, Record<string, number>>>({});
 
   useEffect(() => {
@@ -23,40 +24,42 @@ export default function AddonSelectionModal({ isOpen, onClose, product, onAddToC
 
   if (!isOpen) return null;
 
-  const handleAddonToggle = (groupId: string, addon: any, maxForGroup: number) => {
-    const currentGroupSelections = selected[groupId] || {};
-    const totalSelectedInGroup = Object.values(currentGroupSelections).reduce((a, b) => a + b, 0);
-    const currentAddonQty = currentGroupSelections[addon.id] || 0;
+  /** Returns sum of all addon quantities within a group */
+  const getGroupTotal = (groupId: string): number => {
+    return Object.values(selected[groupId] || {}).reduce((a, b) => a + b, 0);
+  };
 
+  /** Increment addon quantity by 1, respecting the group's max_selections limit */
+  const handleIncrement = (groupId: string, addonId: string, maxForGroup: number) => {
     setSelected(prev => {
-      const newGroup = { ...prev[groupId] };
-      
-      if (currentAddonQty > 0) {
-        // Toggle off since we are treating a click as toggle in multiple choice, 
-        // OR decrement if we want to allow multiples of the SAME addon? 
-        // Usually addons in POS are +1 -1 or checkboxes. Let's make it a checkbox toggle for simplicity if max_selections > 1
-        // But if max_selections is 1, it acts like a radio.
-        if (maxForGroup === 1) {
-           return prev; // cannot toggle off radio easily, just leave it selected, or click another.
+      const currentGroup = prev[groupId] || {};
+      const groupTotal = Object.values(currentGroup).reduce((a, b) => a + b, 0);
+
+      if (groupTotal >= maxForGroup) return prev; // limit reached
+
+      return {
+        ...prev,
+        [groupId]: {
+          ...currentGroup,
+          [addonId]: (currentGroup[addonId] || 0) + 1
         }
-        
-        delete newGroup[addon.id];
+      };
+    });
+  };
+
+  /** Decrement addon quantity by 1 (minimum 0). Removes key when reaching 0. */
+  const handleDecrement = (groupId: string, addonId: string) => {
+    setSelected(prev => {
+      const currentGroup = { ...(prev[groupId] || {}) };
+      const current = currentGroup[addonId] || 0;
+
+      if (current <= 1) {
+        delete currentGroup[addonId];
       } else {
-        // Turning on
-        if (maxForGroup === 1) {
-          // act as radio, clear others
-          return { ...prev, [groupId]: { [addon.id]: 1 } };
-        } else {
-          // act as checkbox, check max
-          if (totalSelectedInGroup < maxForGroup) {
-            newGroup[addon.id] = 1;
-          } else {
-            // Reached max
-            return prev;
-          }
-        }
+        currentGroup[addonId] = current - 1;
       }
-      return { ...prev, [groupId]: newGroup };
+
+      return { ...prev, [groupId]: currentGroup };
     });
   };
 
@@ -82,7 +85,7 @@ export default function AddonSelectionModal({ isOpen, onClose, product, onAddToC
     for (const link of product.product_addon_groups) {
       const groupId = link.addon_group_id;
       const min = link.min_selections;
-      const currentSelectedCount = Object.values(selected[groupId] || {}).reduce((a, b) => a + b, 0);
+      const currentSelectedCount = getGroupTotal(groupId);
       
       if (currentSelectedCount < min) {
         return false;
@@ -142,9 +145,10 @@ export default function AddonSelectionModal({ isOpen, onClose, product, onAddToC
             const group = link.addon_group;
             const min = link.min_selections;
             const max = link.max_selections;
-            const currentSelectedCount = Object.values(selected[group.id] || {}).reduce((a, b) => a + b, 0);
+            const currentSelectedCount = getGroupTotal(group.id);
             
             const isMinMet = currentSelectedCount >= min;
+            const isMaxReached = currentSelectedCount >= max;
 
             return (
               <div key={link.id} className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
@@ -155,48 +159,82 @@ export default function AddonSelectionModal({ isOpen, onClose, product, onAddToC
                       {isMinMet && min > 0 && <Check size={18} className="text-green-500" />}
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      {min === max ? `Escolha ${min} opção` : `Escolha de ${min} até ${max} opções`}
+                      {min === max ? `Escolha ${min}` : `Escolha de ${min} até ${max}`}
                     </p>
                   </div>
-                  {!isMinMet && min > 0 && (
-                     <span className="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                       Obrigatório
-                     </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-bold px-3 py-1 rounded-full transition-colors ${
+                      isMaxReached
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}>
+                      {currentSelectedCount} / {max}
+                    </span>
+                    {!isMinMet && min > 0 && (
+                      <span className="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        Obrigatório
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
                   {group.addons.map((addon: any) => {
-                    const isSelected = !!(selected[group.id] && selected[group.id][addon.id]);
-                    const isDisabled = !isSelected && currentSelectedCount >= max;
+                    const addonQty = (selected[group.id] && selected[group.id][addon.id]) || 0;
+                    const isSelected = addonQty > 0;
+                    const canIncrement = !isMaxReached;
 
                     return (
-                      <button
+                      <div
                         key={addon.id}
-                        disabled={isDisabled && max > 1}
-                        onClick={() => handleAddonToggle(group.id, addon, max)}
-                        className={`text-left p-4 rounded-xl border-2 transition-all flex justify-between items-center ${
+                        className={`p-4 rounded-xl border-2 transition-all flex justify-between items-center ${
                           isSelected 
                             ? 'border-blue-600 bg-blue-50/50 shadow-sm' 
-                            : isDisabled
-                              ? 'border-transparent bg-gray-100 opacity-50 cursor-not-allowed'
-                              : 'border-transparent bg-white shadow-sm hover:border-blue-200'
+                            : 'border-transparent bg-white shadow-sm'
                         }`}
                       >
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <p className={`font-semibold ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
                             {addon.name}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {Number(addon.price) > 0 ? `+ R$ ${Number(addon.price).toFixed(2).replace('.', ',')}` : 'Sem custo adicional'}
+                            {Number(addon.price) > 0 
+                              ? `+ R$ ${Number(addon.price).toFixed(2).replace('.', ',')}${addonQty > 1 ? ` × ${addonQty} = R$ ${(Number(addon.price) * addonQty).toFixed(2).replace('.', ',')}` : ''}` 
+                              : 'Sem custo adicional'}
                           </p>
                         </div>
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          isSelected ? 'border-blue-600 bg-blue-600' : 'border-gray-300 bg-white'
-                        }`}>
-                            {isSelected && <Check size={12} className="text-white" />}
+                        <div className="flex items-center gap-1 ml-3">
+                          <button
+                            type="button"
+                            disabled={addonQty === 0}
+                            onClick={() => handleDecrement(group.id, addon.id)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${
+                              addonQty === 0
+                                ? 'text-gray-300 cursor-not-allowed'
+                                : 'bg-white text-blue-600 shadow-sm hover:bg-blue-50 hover:shadow active:scale-95'
+                            }`}
+                          >
+                            <Minus size={16} />
+                          </button>
+                          <span className={`w-8 text-center text-sm font-bold ${
+                            addonQty > 0 ? 'text-blue-700' : 'text-gray-400'
+                          }`}>
+                            {addonQty}
+                          </span>
+                          <button
+                            type="button"
+                            disabled={!canIncrement}
+                            onClick={() => handleIncrement(group.id, addon.id, max)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${
+                              !canIncrement
+                                ? 'text-gray-300 cursor-not-allowed'
+                                : 'bg-white text-blue-600 shadow-sm hover:bg-blue-50 hover:shadow active:scale-95'
+                            }`}
+                          >
+                            <Plus size={16} />
+                          </button>
                         </div>
-                      </button>
+                      </div>
                     )
                   })}
                 </div>

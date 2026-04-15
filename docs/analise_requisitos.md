@@ -39,6 +39,7 @@ O Criativa PDV é um aplicativo de Ponto de Venda (PDV) desktop offline-first, d
 | RF-06 | Senha de atendimento (ticket_number) sequencial por dia, customizável | ✅ |
 | RF-07 | Leitura dos Grupos de Adicionais vinculados ao produto, com `sort_order` | ✅ |
 | RF-08 | Validação de `min_selections` / `max_selections` por grupo | ✅ (frontend) |
+| RF-08.2 | **Quantidades múltiplas por adicional**: controles `+`/`-` por item, com soma validada contra `max_selections` | ✅ |
 | RF-09 | Cálculo em tempo real do total (base + adicionais) | ✅ |
 | RF-09.1 | **Total recalculado pelo backend** com preços do DB (PricingService) | ✅ |
 | RF-10 | Seleção de método de pagamento (Dinheiro, Crédito, Débito, PIX) | ✅ |
@@ -141,3 +142,15 @@ O padrão de interação nas listagens do catálogo (Produtos, Categorias, Grupo
 5. O produto clonado é inserido com os vínculos de grupos de adicionais replicados.
 6. Uma notificação de sucesso (`toast`) exibe o nome do novo produto.
 7. A lista é recarregada automaticamente.
+
+### 6.3. Fluxo de Seleção de Adicionais com Quantidades
+
+1. O operador clica em um produto que possui Grupos de Adicionais vinculados.
+2. O `AddonSelectionModal` abre, exibindo cada grupo com seus adicionais.
+3. Cada adicional possui controles `+` / `-` para incrementar/decrementar a quantidade.
+4. O cabeçalho do grupo exibe um badge `X / max` com a contagem em tempo real.
+5. O botão `+` é desabilitado quando a soma de quantidades do grupo atinge o `max_selections`.
+6. O botão principal "Adicionar" permanece desabilitado até que todos os grupos obrigatórios satisfaçam `min_selections`.
+7. O preço individual exibe `+ R$ X,XX × N = R$ Y,YY` quando a quantidade é maior que 1.
+8. Ao confirmar, os adicionais são salvos com sua quantidade no carrinho.
+9. Na finalização, o `PricingService` recalcula todos os preços usando o banco de dados, multiplicando `charged_price × quantity` por adicional.
