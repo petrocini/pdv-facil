@@ -208,7 +208,7 @@ ipcMain.handle('printer:printSilent', async (event, options) => {
     event.sender.print({
       silent: true,
       deviceName: options.deviceName,
-      margins: { marginType: 'printableArea' }
+      margins: { marginType: 'none' }
     });
     return { success: true };
   } catch (e: any) {
