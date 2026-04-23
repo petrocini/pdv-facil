@@ -26,6 +26,8 @@ export const OrdersService = {
       const auto_ticket_number = lastOrder ? lastOrder.ticket_number + 1 : 1;
       const ticket_number = cartPayload.ticketNumber ? Number(cartPayload.ticketNumber) : auto_ticket_number;
       const payment_method = cartPayload.paymentMethod || null;
+      const amount_paid = cartPayload.amountPaid != null ? Number(cartPayload.amountPaid) : null;
+      const change_amount = cartPayload.changeAmount != null ? Number(cartPayload.changeAmount) : null;
 
       const { totalAmount, enrichedItems } = await PricingService.calculateOrderTotal(tx, cartPayload.items);
 
@@ -35,6 +37,8 @@ export const OrdersService = {
           total_amount: totalAmount,
           status: 'Pago', 
           payment_method,
+          amount_paid,
+          change_amount,
           order_items: {
             create: enrichedItems.map((item) => ({
               product_id: item.product_id,

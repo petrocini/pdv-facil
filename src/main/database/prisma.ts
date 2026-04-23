@@ -36,4 +36,12 @@ export async function initializeDatabase() {
   } catch (e) {
     // A coluna já existe
   }
+
+  try {
+    await prisma.$queryRawUnsafe(`ALTER TABLE orders ADD COLUMN amount_paid DECIMAL;`);
+  } catch (e) {}
+
+  try {
+    await prisma.$queryRawUnsafe(`ALTER TABLE orders ADD COLUMN change_amount DECIMAL;`);
+  } catch (e) {}
 }

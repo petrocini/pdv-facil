@@ -87,6 +87,8 @@ export default function OrderDetailsModal({ orderId, onClose, onOrderCancelled }
     return {
       ticketNumber: order.ticket_number,
       paymentMethod: order.payment_method || 'N/A',
+      amountPaid: order.amount_paid != null ? Number(order.amount_paid) : undefined,
+      changeAmount: order.change_amount != null ? Number(order.change_amount) : undefined,
       cartTotal: Number(order.total_amount),
       items: order.order_items.map((item: any) => ({
         name: item.product.name,
@@ -208,6 +210,18 @@ export default function OrderDetailsModal({ orderId, onClose, onOrderCancelled }
                      <span>Total Pago</span>
                      <span>{formatCurrency(order.total_amount)}</span>
                    </div>
+                   {order.payment_method === 'Dinheiro' && order.amount_paid != null && (
+                     <>
+                       <div className="flex justify-between items-center text-sm font-semibold text-slate-500 pt-2 border-t border-slate-200 mt-2">
+                         <span>Dinheiro Recebido</span>
+                         <span>{formatCurrency(Number(order.amount_paid))}</span>
+                       </div>
+                       <div className="flex justify-between items-center text-sm font-semibold text-slate-500 mt-1">
+                         <span>Troco</span>
+                         <span>{formatCurrency(Number(order.change_amount))}</span>
+                       </div>
+                     </>
+                   )}
                  </div>
               </div>
               

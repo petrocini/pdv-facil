@@ -6638,11 +6638,15 @@ export namespace Prisma {
   export type OrdersAvgAggregateOutputType = {
     ticket_number: number | null
     total_amount: Decimal | null
+    amount_paid: Decimal | null
+    change_amount: Decimal | null
   }
 
   export type OrdersSumAggregateOutputType = {
     ticket_number: number | null
     total_amount: Decimal | null
+    amount_paid: Decimal | null
+    change_amount: Decimal | null
   }
 
   export type OrdersMinAggregateOutputType = {
@@ -6652,6 +6656,8 @@ export namespace Prisma {
     total_amount: Decimal | null
     status: string | null
     cancel_reason: string | null
+    amount_paid: Decimal | null
+    change_amount: Decimal | null
     payment_method: string | null
   }
 
@@ -6662,6 +6668,8 @@ export namespace Prisma {
     total_amount: Decimal | null
     status: string | null
     cancel_reason: string | null
+    amount_paid: Decimal | null
+    change_amount: Decimal | null
     payment_method: string | null
   }
 
@@ -6672,6 +6680,8 @@ export namespace Prisma {
     total_amount: number
     status: number
     cancel_reason: number
+    amount_paid: number
+    change_amount: number
     payment_method: number
     _all: number
   }
@@ -6680,11 +6690,15 @@ export namespace Prisma {
   export type OrdersAvgAggregateInputType = {
     ticket_number?: true
     total_amount?: true
+    amount_paid?: true
+    change_amount?: true
   }
 
   export type OrdersSumAggregateInputType = {
     ticket_number?: true
     total_amount?: true
+    amount_paid?: true
+    change_amount?: true
   }
 
   export type OrdersMinAggregateInputType = {
@@ -6694,6 +6708,8 @@ export namespace Prisma {
     total_amount?: true
     status?: true
     cancel_reason?: true
+    amount_paid?: true
+    change_amount?: true
     payment_method?: true
   }
 
@@ -6704,6 +6720,8 @@ export namespace Prisma {
     total_amount?: true
     status?: true
     cancel_reason?: true
+    amount_paid?: true
+    change_amount?: true
     payment_method?: true
   }
 
@@ -6714,6 +6732,8 @@ export namespace Prisma {
     total_amount?: true
     status?: true
     cancel_reason?: true
+    amount_paid?: true
+    change_amount?: true
     payment_method?: true
     _all?: true
   }
@@ -6811,6 +6831,8 @@ export namespace Prisma {
     total_amount: Decimal
     status: string
     cancel_reason: string | null
+    amount_paid: Decimal | null
+    change_amount: Decimal | null
     payment_method: string | null
     _count: OrdersCountAggregateOutputType | null
     _avg: OrdersAvgAggregateOutputType | null
@@ -6840,6 +6862,8 @@ export namespace Prisma {
     total_amount?: boolean
     status?: boolean
     cancel_reason?: boolean
+    amount_paid?: boolean
+    change_amount?: boolean
     payment_method?: boolean
     order_items?: boolean | orders$order_itemsArgs<ExtArgs>
     _count?: boolean | OrdersCountOutputTypeDefaultArgs<ExtArgs>
@@ -6852,6 +6876,8 @@ export namespace Prisma {
     total_amount?: boolean
     status?: boolean
     cancel_reason?: boolean
+    amount_paid?: boolean
+    change_amount?: boolean
     payment_method?: boolean
   }, ExtArgs["result"]["orders"]>
 
@@ -6862,6 +6888,8 @@ export namespace Prisma {
     total_amount?: boolean
     status?: boolean
     cancel_reason?: boolean
+    amount_paid?: boolean
+    change_amount?: boolean
     payment_method?: boolean
   }
 
@@ -6883,6 +6911,8 @@ export namespace Prisma {
       total_amount: Prisma.Decimal
       status: string
       cancel_reason: string | null
+      amount_paid: Prisma.Decimal | null
+      change_amount: Prisma.Decimal | null
       payment_method: string | null
     }, ExtArgs["result"]["orders"]>
     composites: {}
@@ -7284,6 +7314,8 @@ export namespace Prisma {
     readonly total_amount: FieldRef<"orders", 'Decimal'>
     readonly status: FieldRef<"orders", 'String'>
     readonly cancel_reason: FieldRef<"orders", 'String'>
+    readonly amount_paid: FieldRef<"orders", 'Decimal'>
+    readonly change_amount: FieldRef<"orders", 'Decimal'>
     readonly payment_method: FieldRef<"orders", 'String'>
   }
     
@@ -10579,6 +10611,8 @@ export namespace Prisma {
     total_amount: 'total_amount',
     status: 'status',
     cancel_reason: 'cancel_reason',
+    amount_paid: 'amount_paid',
+    change_amount: 'change_amount',
     payment_method: 'payment_method'
   };
 
@@ -10980,6 +11014,8 @@ export namespace Prisma {
     total_amount?: DecimalFilter<"orders"> | Decimal | DecimalJsLike | number | string
     status?: StringFilter<"orders"> | string
     cancel_reason?: StringNullableFilter<"orders"> | string | null
+    amount_paid?: DecimalNullableFilter<"orders"> | Decimal | DecimalJsLike | number | string | null
+    change_amount?: DecimalNullableFilter<"orders"> | Decimal | DecimalJsLike | number | string | null
     payment_method?: StringNullableFilter<"orders"> | string | null
     order_items?: Order_itemsListRelationFilter
   }
@@ -10991,6 +11027,8 @@ export namespace Prisma {
     total_amount?: SortOrder
     status?: SortOrder
     cancel_reason?: SortOrderInput | SortOrder
+    amount_paid?: SortOrderInput | SortOrder
+    change_amount?: SortOrderInput | SortOrder
     payment_method?: SortOrderInput | SortOrder
     order_items?: order_itemsOrderByRelationAggregateInput
   }
@@ -11005,6 +11043,8 @@ export namespace Prisma {
     total_amount?: DecimalFilter<"orders"> | Decimal | DecimalJsLike | number | string
     status?: StringFilter<"orders"> | string
     cancel_reason?: StringNullableFilter<"orders"> | string | null
+    amount_paid?: DecimalNullableFilter<"orders"> | Decimal | DecimalJsLike | number | string | null
+    change_amount?: DecimalNullableFilter<"orders"> | Decimal | DecimalJsLike | number | string | null
     payment_method?: StringNullableFilter<"orders"> | string | null
     order_items?: Order_itemsListRelationFilter
   }, "id">
@@ -11016,6 +11056,8 @@ export namespace Prisma {
     total_amount?: SortOrder
     status?: SortOrder
     cancel_reason?: SortOrderInput | SortOrder
+    amount_paid?: SortOrderInput | SortOrder
+    change_amount?: SortOrderInput | SortOrder
     payment_method?: SortOrderInput | SortOrder
     _count?: ordersCountOrderByAggregateInput
     _avg?: ordersAvgOrderByAggregateInput
@@ -11034,6 +11076,8 @@ export namespace Prisma {
     total_amount?: DecimalWithAggregatesFilter<"orders"> | Decimal | DecimalJsLike | number | string
     status?: StringWithAggregatesFilter<"orders"> | string
     cancel_reason?: StringNullableWithAggregatesFilter<"orders"> | string | null
+    amount_paid?: DecimalNullableWithAggregatesFilter<"orders"> | Decimal | DecimalJsLike | number | string | null
+    change_amount?: DecimalNullableWithAggregatesFilter<"orders"> | Decimal | DecimalJsLike | number | string | null
     payment_method?: StringNullableWithAggregatesFilter<"orders"> | string | null
   }
 
@@ -11522,6 +11566,8 @@ export namespace Prisma {
     total_amount: Decimal | DecimalJsLike | number | string
     status?: string
     cancel_reason?: string | null
+    amount_paid?: Decimal | DecimalJsLike | number | string | null
+    change_amount?: Decimal | DecimalJsLike | number | string | null
     payment_method?: string | null
     order_items?: order_itemsCreateNestedManyWithoutOrderInput
   }
@@ -11533,6 +11579,8 @@ export namespace Prisma {
     total_amount: Decimal | DecimalJsLike | number | string
     status?: string
     cancel_reason?: string | null
+    amount_paid?: Decimal | DecimalJsLike | number | string | null
+    change_amount?: Decimal | DecimalJsLike | number | string | null
     payment_method?: string | null
     order_items?: order_itemsUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -11544,6 +11592,8 @@ export namespace Prisma {
     total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: StringFieldUpdateOperationsInput | string
     cancel_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    amount_paid?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    change_amount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
     order_items?: order_itemsUpdateManyWithoutOrderNestedInput
   }
@@ -11555,6 +11605,8 @@ export namespace Prisma {
     total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: StringFieldUpdateOperationsInput | string
     cancel_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    amount_paid?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    change_amount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
     order_items?: order_itemsUncheckedUpdateManyWithoutOrderNestedInput
   }
@@ -11566,6 +11618,8 @@ export namespace Prisma {
     total_amount: Decimal | DecimalJsLike | number | string
     status?: string
     cancel_reason?: string | null
+    amount_paid?: Decimal | DecimalJsLike | number | string | null
+    change_amount?: Decimal | DecimalJsLike | number | string | null
     payment_method?: string | null
   }
 
@@ -11576,6 +11630,8 @@ export namespace Prisma {
     total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: StringFieldUpdateOperationsInput | string
     cancel_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    amount_paid?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    change_amount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -11586,6 +11642,8 @@ export namespace Prisma {
     total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: StringFieldUpdateOperationsInput | string
     cancel_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    amount_paid?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    change_amount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -12113,6 +12171,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type ordersCountOrderByAggregateInput = {
     id?: SortOrder
     ticket_number?: SortOrder
@@ -12120,12 +12189,16 @@ export namespace Prisma {
     total_amount?: SortOrder
     status?: SortOrder
     cancel_reason?: SortOrder
+    amount_paid?: SortOrder
+    change_amount?: SortOrder
     payment_method?: SortOrder
   }
 
   export type ordersAvgOrderByAggregateInput = {
     ticket_number?: SortOrder
     total_amount?: SortOrder
+    amount_paid?: SortOrder
+    change_amount?: SortOrder
   }
 
   export type ordersMaxOrderByAggregateInput = {
@@ -12135,6 +12208,8 @@ export namespace Prisma {
     total_amount?: SortOrder
     status?: SortOrder
     cancel_reason?: SortOrder
+    amount_paid?: SortOrder
+    change_amount?: SortOrder
     payment_method?: SortOrder
   }
 
@@ -12145,12 +12220,16 @@ export namespace Prisma {
     total_amount?: SortOrder
     status?: SortOrder
     cancel_reason?: SortOrder
+    amount_paid?: SortOrder
+    change_amount?: SortOrder
     payment_method?: SortOrder
   }
 
   export type ordersSumOrderByAggregateInput = {
     ticket_number?: SortOrder
     total_amount?: SortOrder
+    amount_paid?: SortOrder
+    change_amount?: SortOrder
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -12165,6 +12244,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type OrdersRelationFilter = {
@@ -12630,6 +12725,14 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
   export type order_itemsUpdateManyWithoutOrderNestedInput = {
     create?: XOR<order_itemsCreateWithoutOrderInput, order_itemsUncheckedCreateWithoutOrderInput> | order_itemsCreateWithoutOrderInput[] | order_itemsUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: order_itemsCreateOrConnectWithoutOrderInput | order_itemsCreateOrConnectWithoutOrderInput[]
@@ -12905,6 +13008,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -12917,6 +13031,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type productsCreateWithoutCategoryInput = {
@@ -13460,6 +13590,8 @@ export namespace Prisma {
     total_amount: Decimal | DecimalJsLike | number | string
     status?: string
     cancel_reason?: string | null
+    amount_paid?: Decimal | DecimalJsLike | number | string | null
+    change_amount?: Decimal | DecimalJsLike | number | string | null
     payment_method?: string | null
   }
 
@@ -13470,6 +13602,8 @@ export namespace Prisma {
     total_amount: Decimal | DecimalJsLike | number | string
     status?: string
     cancel_reason?: string | null
+    amount_paid?: Decimal | DecimalJsLike | number | string | null
+    change_amount?: Decimal | DecimalJsLike | number | string | null
     payment_method?: string | null
   }
 
@@ -13544,6 +13678,8 @@ export namespace Prisma {
     total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: StringFieldUpdateOperationsInput | string
     cancel_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    amount_paid?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    change_amount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -13554,6 +13690,8 @@ export namespace Prisma {
     total_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     status?: StringFieldUpdateOperationsInput | string
     cancel_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    amount_paid?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    change_amount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

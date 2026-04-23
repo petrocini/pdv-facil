@@ -17,7 +17,7 @@ export default function CartSidebar() {
     setIsPaymentModalOpen(true);
   };
 
-  const handleConfirmPayment = async (paymentMethod: string, ticketNumber: number) => {
+  const handleConfirmPayment = async (paymentMethod: string, ticketNumber: number, amountPaid?: number, changeAmount?: number) => {
     setIsProcessing(true);
     
     try {
@@ -25,7 +25,9 @@ export default function CartSidebar() {
         items,
         cartTotal,
         paymentMethod,
-        ticketNumber
+        ticketNumber,
+        amountPaid,
+        changeAmount
       };
       
       const res = await window.api.orders.create(payload);
@@ -33,6 +35,8 @@ export default function CartSidebar() {
         setOrderConfirmData({
           ticketNumber: res.data.ticket_number,
           paymentMethod: paymentMethod,
+          amountPaid: amountPaid,
+          changeAmount: changeAmount,
           items: items,
           cartTotal: cartTotal
         });

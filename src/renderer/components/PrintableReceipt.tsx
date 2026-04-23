@@ -5,6 +5,8 @@ interface PrintableReceiptProps {
   orderData: {
     ticketNumber: number | string;
     paymentMethod: string;
+    amountPaid?: number;
+    changeAmount?: number;
     items: Array<{
       name: string;
       quantity: number;
@@ -26,7 +28,7 @@ export default function PrintableReceipt({ orderData, settings }: PrintableRecei
     <div className="print-wrapper">
       <div className="print-receipt font-mono text-black text-sm bg-white">
         {/* Header (Customer Only) */}
-        <div className="print-hide-kitchen text-center mb-4 pb-2 border-b border-black border-dashed">
+        <div className="print-hide-kitchen text-center mb-2 pb-2 border-b border-black border-dashed">
           <h1 className="font-bold text-lg mb-1">{settings?.company_name || 'PDV FÁCIL'}</h1>
           {settings?.company_document ? <p className="text-sm font-semibold mb-1">CNPJ: {settings.company_document}</p> : null}
           <p className="text-xs">Documento Auxiliar de Venda</p>
@@ -35,7 +37,7 @@ export default function PrintableReceipt({ orderData, settings }: PrintableRecei
         </div>
 
         {/* Ticket Number (Both) */}
-        <div className="text-center mb-4 pb-4 border-b border-black border-dashed ticket-container">
+        <div className="text-center mb-2 border-b border-black border-dashed ticket-container">
           <h2 className="text-lg font-bold senha-label">SENHA DE ATENDIMENTO</h2>
           <p className="text-5xl font-black my-2 ticket-number">
             <span className="kitchen-only-inline mr-1">Senha</span>
@@ -54,7 +56,7 @@ export default function PrintableReceipt({ orderData, settings }: PrintableRecei
                   R$ {item.totalPrice.toFixed(2).replace('.', ',')}
                 </span>
               </div>
-              
+
               {item.addons && item.addons.length > 0 && (
                 <div className="pl-4 mt-1 text-xs font-bold">
                   {item.addons.map((addon, idx) => (
@@ -77,10 +79,22 @@ export default function PrintableReceipt({ orderData, settings }: PrintableRecei
             <span>TOTAL</span>
             <span>R$ {orderData.cartTotal.toFixed(2).replace('.', ',')}</span>
           </div>
-          <div className="flex justify-between text-sm mb-4">
+          <div className="flex justify-between text-sm mb-2">
             <span>FORMA DE PAGAMENTO</span>
             <span>{orderData.paymentMethod}</span>
           </div>
+          {orderData.paymentMethod === 'Dinheiro' && orderData.amountPaid != null && (
+            <>
+              <div className="flex justify-between text-sm mb-1">
+                <span>DINHEIRO RECEBIDO</span>
+                <span>R$ {orderData.amountPaid.toFixed(2).replace('.', ',')}</span>
+              </div>
+              <div className="flex justify-between text-sm mb-2 font-bold">
+                <span>TROCO</span>
+                <span>R$ {orderData.changeAmount?.toFixed(2).replace('.', ',')}</span>
+              </div>
+            </>
+          )}
           <div className="text-center text-xs mt-6 pb-8">
             <p>Obrigado e volte sempre!</p>
           </div>

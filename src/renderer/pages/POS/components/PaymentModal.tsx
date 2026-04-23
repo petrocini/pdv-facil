@@ -6,7 +6,7 @@ interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   cartTotal: number;
-  onConfirm: (paymentMethod: string, customTicketNumber: number) => void;
+  onConfirm: (paymentMethod: string, customTicketNumber: number, amountPaid?: number, changeAmount?: number) => void;
   isProcessing: boolean;
 }
 
@@ -71,7 +71,7 @@ export default function PaymentModal({ isOpen, onClose, cartTotal, onConfirm, is
         toast.error('O valor recebido não pode ser menor que o valor total da venda.');
         return;
       }
-      onConfirm(selectedMethod, Number(ticketNumber));
+      onConfirm(selectedMethod, Number(ticketNumber), received, received - cartTotal);
     }
   };
 

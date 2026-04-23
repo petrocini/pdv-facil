@@ -165,6 +165,8 @@ exports.Prisma.OrdersScalarFieldEnum = {
   total_amount: 'total_amount',
   status: 'status',
   cancel_reason: 'cancel_reason',
+  amount_paid: 'amount_paid',
+  change_amount: 'change_amount',
   payment_method: 'payment_method'
 };
 

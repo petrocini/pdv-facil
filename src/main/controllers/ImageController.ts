@@ -28,7 +28,7 @@ export class ImageController {
 
       await sharp(sourcePath)
         .resize({ width: 800, height: 800, fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 80 })
+        .webp({ quality: 95 })
         .toFile(destinationPath);
 
       return { success: true, data: filename };
