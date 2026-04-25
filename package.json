@@ -16,7 +16,8 @@
       {
         "provider": "github",
         "owner": "petrocini",
-        "repo": "pdv-facil"
+        "repo": "pdv-facil",
+        "releaseType": "release"
       }
     ],
     "directories": {
