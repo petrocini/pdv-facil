@@ -2,9 +2,10 @@ name: Build & Release
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*'  # Dispara apenas quando você cria uma tag como v1.1.0, v1.2.0, etc.
 
-# Garante que apenas um build rode por vez, cancelando o anterior se houver push rápido
+# Garante que apenas um build rode por vez
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: true
@@ -14,7 +15,7 @@ jobs:
     runs-on: windows-latest
 
     permissions:
-      contents: write  # Necessário para criar releases e fazer upload de assets
+      contents: write
 
     steps:
       - name: Checkout code
