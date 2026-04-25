@@ -64,6 +64,8 @@ model orders {
   total_amount   Decimal
   status         String        @default("Aberto")
   cancel_reason  String?
+  amount_paid    Decimal?
+  change_amount  Decimal?
   payment_method String?
   order_items    order_items[]
 }
