@@ -2,7 +2,7 @@ name: Build & Release
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 # Garante que apenas um build rode por vez, cancelando o anterior se houver push rápido
 concurrency:
