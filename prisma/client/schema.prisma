@@ -57,6 +57,19 @@ model product_addon_groups {
   addon_group    addon_groups @relation(fields: [addon_group_id], references: [id])
 }
 
+model events {
+  id         String   @id @default(uuid())
+  name       String
+  city       String
+  state      String?  @default("SP")
+  notes      String?
+  start_date DateTime
+  end_date   DateTime
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  orders     orders[]
+}
+
 model orders {
   id             String        @id @default(uuid())
   ticket_number  Int
@@ -67,6 +80,8 @@ model orders {
   amount_paid    Decimal?
   change_amount  Decimal?
   payment_method String?
+  event_id       String?
+  event          events?       @relation(fields: [event_id], references: [id])
   order_items    order_items[]
 }
 

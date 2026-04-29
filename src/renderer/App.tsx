@@ -13,6 +13,7 @@ import POSPage from './pages/POS/POSPage';
 import OrderHistoryList from './pages/Orders/OrderHistoryList';
 import Settings from './pages/Settings/Settings';
 import Help from './pages/Help/Help';
+import EventsPage from './pages/Events/EventsPage';
 
 export default function App() {
   useEffect(() => {
@@ -47,6 +48,7 @@ export default function App() {
           
           <Route path="pos" element={<POSPage />} />
           <Route path="orders" element={<OrderHistoryList />} />
+          <Route path="events" element={<EventsPage />} />
           <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="/help" element={<Help />} />

@@ -14,6 +14,9 @@ interface PrintableReceiptProps {
       addons?: Array<{ name: string; quantity: number; price: number }>;
     }>;
     cartTotal: number;
+    eventName?: string;
+    eventCity?: string;
+    eventState?: string;
   };
   settings?: {
     company_name?: string;
@@ -29,7 +32,18 @@ export default function PrintableReceipt({ orderData, settings }: PrintableRecei
       <div className="print-receipt font-mono text-black text-sm bg-white">
         {/* Header (Customer Only) */}
         <div className="print-hide-kitchen text-center mb-2 pb-2 border-b border-black border-dashed">
-          <h1 className="font-bold text-lg mb-1">{settings?.company_name || 'PDV FÁCIL'}</h1>
+          {orderData.eventName ? (
+            <>
+              <h1 className="font-bold text-xl leading-none">{settings?.company_name || 'CRIATIVA PDV'}</h1>
+              <div className="my-1 border-t border-b border-dashed border-black/30 py-1">
+                <h2 className="font-black text-lg">🎪 {orderData.eventName}</h2>
+                <p className="text-xs">📍 {orderData.eventCity} {orderData.eventState ? `- ${orderData.eventState}` : ''}</p>
+              </div>
+            </>
+          ) : (
+            <h1 className="font-bold text-lg mb-1">{settings?.company_name || 'PDV FÁCIL'}</h1>
+          )}
+          
           {settings?.company_document ? <p className="text-sm font-semibold mb-1">CNPJ: {settings.company_document}</p> : null}
           <p className="text-xs">Documento Auxiliar de Venda</p>
           <p className="text-xs mb-2">NÃO É DOCUMENTO FISCAL</p>

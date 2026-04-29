@@ -10,9 +10,10 @@
 ## ✨ Principais Funcionalidades
 
 - **🚀 Operação Offline-First**: O banco de dados SQLite local garante que você nunca pare de vender por falta de sinal.
+- **📍 Gestão de Eventos e Cidades**: Controle de eventos itinerantes, associação retroativa automática de pedidos por data/hora e relatórios granulares por localização.
 - **📸 Catálogo Otimizado**: Gestão de produtos, categorias e grupos de adicionais com suporte a imagens comprimidas automaticamente.
 - **🗂️ Gestão de Pedidos**: Fluxo completo de emissão de pedidos, cálculo automático de totais (base + adicionais) e controle de senha de atendimento.
-- **📈 Dashboard em Tempo Real**: Métricas de faturamento diário, itens mais vendidos e ticket médio calculados instantaneamente.
+- **📈 Dashboard Analítico Avançado**: Métricas de faturamento diário, itens mais vendidos, ticket médio e análise de formas de pagamento com gráficos dinâmicos e filtros responsivos em tempo real.
 - **🖨️ Impressão Térmica**: Suporte a impressoras térmicas de 80mm com layouts específicos para Cozinha e Cliente.
 - **🛠️ Configurações Flexíveis**: Personalize os dados da sua empresa e o diretório de armazenamento de imagens.
 

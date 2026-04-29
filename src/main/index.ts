@@ -145,6 +145,7 @@ import { OrdersController } from './controllers/OrdersController';
 import { DashboardController } from './controllers/DashboardController';
 import { ImageController } from './controllers/ImageController';
 import { SettingsController } from './controllers/SettingsController';
+import { EventController } from './controllers/EventController';
 
 ipcMain.handle('settings:get', SettingsController.get);
 ipcMain.handle('settings:upsert', SettingsController.upsert);
@@ -164,6 +165,13 @@ ipcMain.handle('dashboard:getMetrics', DashboardController.getMetrics);
 ipcMain.handle('dashboard:getTopItems', DashboardController.getTopItems);
 ipcMain.handle('dashboard:getChartData', DashboardController.getChartData);
 ipcMain.handle('dashboard:getSalesByPaymentMethod', DashboardController.getSalesByPaymentMethod);
+ipcMain.handle('dashboard:getEventMetrics', DashboardController.getEventMetrics);
+ipcMain.handle('dashboard:getCityComparison', DashboardController.getCityComparison);
+ipcMain.handle('dashboard:getEventComparison', DashboardController.getEventComparison);
+ipcMain.handle('dashboard:getEventTopItems', DashboardController.getEventTopItems);
+ipcMain.handle('dashboard:getCityRevenueOverTime', DashboardController.getCityRevenueOverTime);
+ipcMain.handle('dashboard:getEventPaymentMethods', DashboardController.getEventPaymentMethods);
+ipcMain.handle('dashboard:getCityRanking', DashboardController.getCityRanking);
 
 ipcMain.handle('orders:create', OrdersController.create);
 ipcMain.handle('orders:getNextTicketNumber', OrdersController.getNextTicketNumber);
@@ -198,6 +206,14 @@ ipcMain.handle('addons:delete', AddonController.delete);
 
 ipcMain.handle('productAddonGroups:getByProductId', ProductAddonGroupController.getByProductId);
 ipcMain.handle('productAddonGroups:saveLinks', ProductAddonGroupController.saveLinks);
+
+ipcMain.handle('events:getAll', EventController.getAll);
+ipcMain.handle('events:getById', EventController.getById);
+ipcMain.handle('events:create', EventController.create);
+ipcMain.handle('events:update', EventController.update);
+ipcMain.handle('events:delete', EventController.delete);
+ipcMain.handle('events:getActive', EventController.getActive);
+ipcMain.handle('events:endActive', EventController.endActive);
 
 ipcMain.handle('printer:getPrinters', async (event) => {
   return await event.sender.getPrintersAsync();

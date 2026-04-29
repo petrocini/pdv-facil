@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, X } from 'lucide-react';
 import { useCartStore } from '../../../store/cartStore';
+import { useEventStore } from '../../../store/eventStore';
 import { toast } from 'sonner';
 import PaymentModal from './PaymentModal';
 import PrintModal from './PrintModal';
 
 export default function CartSidebar() {
   const { items, cartTotal, updateQuantity, removeItem, clearCart } = useCartStore();
+  const { activeEvent } = useEventStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
@@ -27,7 +29,8 @@ export default function CartSidebar() {
         paymentMethod,
         ticketNumber,
         amountPaid,
-        changeAmount
+        changeAmount,
+        eventId: activeEvent?.id || null
       };
       
       const res = await window.api.orders.create(payload);
@@ -38,7 +41,10 @@ export default function CartSidebar() {
           amountPaid: amountPaid,
           changeAmount: changeAmount,
           items: items,
-          cartTotal: cartTotal
+          cartTotal: cartTotal,
+          eventName: activeEvent?.name,
+          eventCity: activeEvent?.city,
+          eventState: activeEvent?.state
         });
         
         clearCart();

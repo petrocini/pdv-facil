@@ -158,6 +158,18 @@ exports.Prisma.Product_addon_groupsScalarFieldEnum = {
   sort_order: 'sort_order'
 };
 
+exports.Prisma.EventsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  city: 'city',
+  state: 'state',
+  notes: 'notes',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  is_active: 'is_active',
+  created_at: 'created_at'
+};
+
 exports.Prisma.OrdersScalarFieldEnum = {
   id: 'id',
   ticket_number: 'ticket_number',
@@ -167,7 +179,8 @@ exports.Prisma.OrdersScalarFieldEnum = {
   cancel_reason: 'cancel_reason',
   amount_paid: 'amount_paid',
   change_amount: 'change_amount',
-  payment_method: 'payment_method'
+  payment_method: 'payment_method',
+  event_id: 'event_id'
 };
 
 exports.Prisma.Order_itemsScalarFieldEnum = {
@@ -213,6 +226,7 @@ exports.Prisma.ModelName = {
   addon_groups: 'addon_groups',
   addons: 'addons',
   product_addon_groups: 'product_addon_groups',
+  events: 'events',
   orders: 'orders',
   order_items: 'order_items',
   order_item_addons: 'order_item_addons',

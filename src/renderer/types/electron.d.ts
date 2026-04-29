@@ -22,6 +22,18 @@ declare global {
     category?: Category;
   }
 
+  interface Event {
+    id: string;
+    name: string;
+    city: string;
+    state?: string;
+    notes?: string;
+    start_date: string | Date;
+    end_date: string | Date;
+    is_active: boolean;
+    created_at: string | Date;
+  }
+
   interface Window {
     api: {
       app: {
@@ -68,6 +80,22 @@ declare global {
         getTopItems: (filters?: any) => Promise<ApiResponse<any>>;
         getChartData: (filters?: any) => Promise<ApiResponse<any>>;
         getSalesByPaymentMethod: (filters?: any) => Promise<ApiResponse<any>>;
+        getEventMetrics: (eventId: string) => Promise<ApiResponse<any>>;
+        getCityComparison: (filters?: any) => Promise<ApiResponse<any>>;
+        getEventComparison: (filters?: any) => Promise<ApiResponse<any>>;
+        getEventTopItems: (eventId: string) => Promise<ApiResponse<any>>;
+        getCityRevenueOverTime: (filters?: any) => Promise<ApiResponse<any>>;
+        getEventPaymentMethods: (eventId: string) => Promise<ApiResponse<any>>;
+        getCityRanking: (filters?: any) => Promise<ApiResponse<any>>;
+      };
+      events: {
+        getAll: () => Promise<ApiResponse<Event[]>>;
+        getById: (id: string) => Promise<ApiResponse<Event>>;
+        create: (data: any) => Promise<ApiResponse<{ event: Event; linkedCount: number }>>;
+        update: (id: string, data: any) => Promise<ApiResponse<{ event: Event; linkedCount: number }>>;
+        delete: (id: string) => Promise<ApiResponse<Event>>;
+        getActive: () => Promise<ApiResponse<Event | null>>;
+        endActive: () => Promise<ApiResponse<Event>>;
       };
       updater: {
         quitAndInstall: () => Promise<void>;

@@ -39,6 +39,7 @@ export const OrdersService = {
           payment_method,
           amount_paid,
           change_amount,
+          event_id: cartPayload.eventId || null,
           order_items: {
             create: enrichedItems.map((item) => ({
               product_id: item.product_id,

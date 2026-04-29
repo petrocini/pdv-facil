@@ -61,7 +61,23 @@ contextBridge.exposeInMainWorld('api', {
     getMetrics: (filters?: any) => ipcRenderer.invoke('dashboard:getMetrics', filters),
     getTopItems: (filters?: any) => ipcRenderer.invoke('dashboard:getTopItems', filters),
     getChartData: (filters?: any) => ipcRenderer.invoke('dashboard:getChartData', filters),
-    getSalesByPaymentMethod: (filters?: any) => ipcRenderer.invoke('dashboard:getSalesByPaymentMethod', filters)
+    getSalesByPaymentMethod: (filters?: any) => ipcRenderer.invoke('dashboard:getSalesByPaymentMethod', filters),
+    getEventMetrics: (eventId: string) => ipcRenderer.invoke('dashboard:getEventMetrics', eventId),
+    getCityComparison: (filters?: any) => ipcRenderer.invoke('dashboard:getCityComparison', filters),
+    getEventComparison: (filters?: any) => ipcRenderer.invoke('dashboard:getEventComparison', filters),
+    getEventTopItems: (eventId: string) => ipcRenderer.invoke('dashboard:getEventTopItems', eventId),
+    getCityRevenueOverTime: (filters?: any) => ipcRenderer.invoke('dashboard:getCityRevenueOverTime', filters),
+    getEventPaymentMethods: (eventId: string) => ipcRenderer.invoke('dashboard:getEventPaymentMethods', eventId),
+    getCityRanking: (filters?: any) => ipcRenderer.invoke('dashboard:getCityRanking', filters)
+  },
+  events: {
+    getAll: () => ipcRenderer.invoke('events:getAll'),
+    getById: (id: string) => ipcRenderer.invoke('events:getById', id),
+    create: (data: any) => ipcRenderer.invoke('events:create', data),
+    update: (id: string, data: any) => ipcRenderer.invoke('events:update', id, data),
+    delete: (id: string) => ipcRenderer.invoke('events:delete', id),
+    getActive: () => ipcRenderer.invoke('events:getActive'),
+    endActive: () => ipcRenderer.invoke('events:endActive')
   },
   printer: {
     getPrinters: () => ipcRenderer.invoke('printer:getPrinters'),

@@ -44,4 +44,26 @@ export async function initializeDatabase() {
   try {
     await prisma.$queryRawUnsafe(`ALTER TABLE orders ADD COLUMN change_amount DECIMAL;`);
   } catch (e) {}
+
+  try {
+    await prisma.$queryRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "events" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "name" TEXT NOT NULL,
+        "city" TEXT NOT NULL,
+        "state" TEXT DEFAULT 'SP',
+        "notes" TEXT,
+        "start_date" DATETIME NOT NULL,
+        "end_date" DATETIME NOT NULL,
+        "is_active" BOOLEAN NOT NULL DEFAULT 1,
+        "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+  } catch (e) {
+    logger.error('Erro ao criar tabela events:', e);
+  }
+
+  try {
+    await prisma.$queryRawUnsafe(`ALTER TABLE orders ADD COLUMN event_id TEXT REFERENCES events("id");`);
+  } catch (e) {}
 }
