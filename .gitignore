@@ -15,6 +15,9 @@ dist-electron/
 # Database and logs
 *.sqlite
 *.sqlite-journal
+*.db-journal
+*.db-wal
+*.db-shm
 *.log
 userData/
 
@@ -26,6 +29,7 @@ Thumbs.db
 # Prisma generated client (regenerated on install)
 # Keep schema.prisma tracked but ignore generated output
 node_modules/.prisma/
+prisma/client/
 
 # IDE and editor files
 .vscode/
@@ -36,3 +40,7 @@ node_modules/.prisma/
 
 # Windows Zone.Identifier files
 *:Zone.Identifier
+
+# TypeScript build cache
+*.tsbuildinfo
+

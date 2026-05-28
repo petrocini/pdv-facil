@@ -37,11 +37,36 @@ export const DashboardService = {
       }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: {
+        created_at: {
+          gte: start,
+          lte: end,
+        },
+        ...(filters?.paymentMethod ? { payment_method: filters.paymentMethod } : {}),
+        ...(filters?.eventId ? { event_id: filters.eventId } : {}),
+        ...(filters?.city ? { event: { city: filters.city } } : {})
+      },
+      select: {
+        amount: true,
+        type: true
+      }
+    });
+
     const totalOrders = orders.length;
     let totalRevenue = 0;
     
     for (const order of orders) {
       totalRevenue += Number(order.total_amount);
+    }
+
+    for (const m of movements) {
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        totalRevenue += amt;
+      } else {
+        totalRevenue -= amt;
+      }
     }
 
     const averageTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
@@ -124,6 +149,23 @@ export const DashboardService = {
       }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: {
+        created_at: {
+          gte: start,
+          lte: end,
+        },
+        ...(filters?.paymentMethod ? { payment_method: filters.paymentMethod } : {}),
+        ...(filters?.eventId ? { event_id: filters.eventId } : {}),
+        ...(filters?.city ? { event: { city: filters.city } } : {})
+      },
+      select: {
+        created_at: true,
+        amount: true,
+        type: true
+      }
+    });
+
     const diffInHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
     // Agrupa por hora se a faixa de tempo for curta (ex: 3 dias = 72h), caso contrário, por dia.
     const groupBy = diffInHours <= 72 ? 'hour' : 'day';
@@ -149,6 +191,32 @@ export const DashboardService = {
         groupedData[key] = 0;
       }
       groupedData[key] += Number(order.total_amount);
+    }
+
+    for (const m of movements) {
+      const date = new Date(m.created_at);
+      let key = '';
+
+      if (groupBy === 'hour') {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        key = `${day}/${month} ${hour}:00`;
+      } else {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        key = `${day}/${month}`;
+      }
+
+      if (!groupedData[key]) {
+        groupedData[key] = 0;
+      }
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        groupedData[key] += amt;
+      } else {
+        groupedData[key] -= amt;
+      }
     }
 
     return Object.keys(groupedData).map(key => ({
@@ -181,6 +249,25 @@ export const DashboardService = {
       }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: {
+        created_at: {
+          gte: start,
+          lte: end,
+        },
+        payment_method: {
+          not: null
+        },
+        ...(filters?.eventId ? { event_id: filters.eventId } : {}),
+        ...(filters?.city ? { event: { city: filters.city } } : {})
+      },
+      select: {
+        payment_method: true,
+        amount: true,
+        type: true
+      }
+    });
+
     const groupedData: Record<string, { total: number; count: number }> = {};
 
     for (const order of orders) {
@@ -190,6 +277,19 @@ export const DashboardService = {
       }
       groupedData[method].total += Number(order.total_amount);
       groupedData[method].count += 1;
+    }
+
+    for (const m of movements) {
+      const method = m.payment_method || 'Outro';
+      if (!groupedData[method]) {
+        groupedData[method] = { total: 0, count: 0 };
+      }
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        groupedData[method].total += amt;
+      } else {
+        groupedData[method].total -= amt;
+      }
     }
 
     return Object.keys(groupedData).map(key => ({
@@ -210,13 +310,34 @@ export const DashboardService = {
       select: { total_amount: true }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: { event_id: eventId },
+      select: { amount: true, type: true }
+    });
+
     const totalOrders = orders.length;
-    const totalRevenue = orders.reduce((acc, order) => acc + Number(order.total_amount), 0);
-    const averageTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    const salesRevenue = orders.reduce((acc, order) => acc + Number(order.total_amount), 0);
+    
+    let extraordinaryInflow = 0;
+    let extraordinaryOutflow = 0;
+    for (const m of movements) {
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        extraordinaryInflow += amt;
+      } else {
+        extraordinaryOutflow += amt;
+      }
+    }
+
+    const totalRevenue = salesRevenue + extraordinaryInflow - extraordinaryOutflow;
+    const averageTicket = totalOrders > 0 ? salesRevenue / totalOrders : 0;
 
     return {
       eventName: event.name,
       city: event.city,
+      salesRevenue,
+      extraordinaryInflow,
+      extraordinaryOutflow,
       totalRevenue,
       totalOrders,
       averageTicket
@@ -235,6 +356,13 @@ export const DashboardService = {
       select: { total_amount: true, event: { select: { city: true } } }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: {
+        created_at: { gte: start, lte: end }
+      },
+      select: { amount: true, type: true, event: { select: { city: true } } }
+    });
+
     const cityStats: Record<string, { totalRevenue: number; totalOrders: number }> = {};
 
     for (const order of orders) {
@@ -246,11 +374,24 @@ export const DashboardService = {
       cityStats[city].totalOrders += 1;
     }
 
+    for (const m of movements) {
+      if (!m.event) continue;
+      const city = m.event.city;
+      if (!cityStats[city]) cityStats[city] = { totalRevenue: 0, totalOrders: 0 };
+      
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        cityStats[city].totalRevenue += amt;
+      } else {
+        cityStats[city].totalRevenue -= amt;
+      }
+    }
+
     return Object.keys(cityStats).map(city => ({
       city,
       totalRevenue: Number(cityStats[city].totalRevenue.toFixed(2)),
       totalOrders: cityStats[city].totalOrders,
-      averageTicket: Number((cityStats[city].totalRevenue / cityStats[city].totalOrders).toFixed(2))
+      averageTicket: cityStats[city].totalOrders > 0 ? Number((cityStats[city].totalRevenue / cityStats[city].totalOrders).toFixed(2)) : 0
     })).sort((a, b) => b.totalRevenue - a.totalRevenue);
   },
 
@@ -267,14 +408,26 @@ export const DashboardService = {
         orders: {
           where: { status: { not: 'Cancelado' } },
           select: { total_amount: true }
+        },
+        extraordinary_movements: {
+          select: { amount: true, type: true }
         }
       }
     });
 
     return events.map(event => {
       const totalOrders = event.orders.length;
-      const totalRevenue = event.orders.reduce((acc, order) => acc + Number(order.total_amount), 0);
+      let totalRevenue = event.orders.reduce((acc, order) => acc + Number(order.total_amount), 0);
       
+      for (const m of event.extraordinary_movements) {
+        const amt = Number(m.amount);
+        if (m.type === 'entrada') {
+          totalRevenue += amt;
+        } else {
+          totalRevenue -= amt;
+        }
+      }
+
       return {
         id: event.id,
         eventName: event.name,
@@ -328,6 +481,13 @@ export const DashboardService = {
       orderBy: { created_at: 'asc' }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: {
+        created_at: { gte: start, lte: end }
+      },
+      select: { created_at: true, amount: true, type: true, event: { select: { city: true } } }
+    });
+
     const diffInHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
     const groupBy = diffInHours <= 72 ? 'hour' : 'day';
 
@@ -361,6 +521,37 @@ export const DashboardService = {
       groupedData[key][city] += Number(order.total_amount);
     }
 
+    for (const m of movements) {
+      if (!m.event) continue;
+      
+      const city = m.event.city;
+      allCities.add(city);
+      
+      const date = new Date(m.created_at);
+      let key = '';
+
+      if (groupBy === 'hour') {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const hour = String(date.getHours()).padStart(2, '0');
+        key = `${day}/${month} ${hour}:00`;
+      } else {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        key = `${day}/${month}`;
+      }
+
+      if (!groupedData[key]) groupedData[key] = {};
+      if (!groupedData[key][city]) groupedData[key][city] = 0;
+      
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        groupedData[key][city] += amt;
+      } else {
+        groupedData[key][city] -= amt;
+      }
+    }
+
     return Object.keys(groupedData).map(key => {
       const dataPoint: any = { date: key };
       allCities.forEach(city => {
@@ -380,13 +571,36 @@ export const DashboardService = {
       select: { payment_method: true, total_amount: true }
     });
 
+    const movements = await prisma.extraordinary_movements.findMany({
+      where: {
+        event_id: eventId,
+        payment_method: { not: null }
+      },
+      select: { payment_method: true, amount: true, type: true }
+    });
+
     const groupedData: Record<string, { total: number; count: number }> = {};
 
     for (const order of orders) {
       const method = order.payment_method || 'Outro';
-      if (!groupedData[method]) groupedData[method] = { total: 0, count: 0 };
+      if (!groupedData[method]) {
+        groupedData[method] = { total: 0, count: 0 };
+      }
       groupedData[method].total += Number(order.total_amount);
       groupedData[method].count += 1;
+    }
+
+    for (const m of movements) {
+      const method = m.payment_method || 'Outro';
+      if (!groupedData[method]) {
+        groupedData[method] = { total: 0, count: 0 };
+      }
+      const amt = Number(m.amount);
+      if (m.type === 'entrada') {
+        groupedData[method].total += amt;
+      } else {
+        groupedData[method].total -= amt;
+      }
     }
 
     return Object.keys(groupedData).map(key => ({
@@ -409,6 +623,9 @@ export const DashboardService = {
         orders: {
           where: { status: { not: 'Cancelado' } },
           select: { total_amount: true }
+        },
+        extraordinary_movements: {
+          select: { amount: true, type: true }
         }
       }
     });
@@ -424,6 +641,15 @@ export const DashboardService = {
       for (const order of event.orders) {
         cityStats[city].totalRevenue += Number(order.total_amount);
         cityStats[city].totalOrders += 1;
+      }
+
+      for (const m of event.extraordinary_movements) {
+        const amt = Number(m.amount);
+        if (m.type === 'entrada') {
+          cityStats[city].totalRevenue += amt;
+        } else {
+          cityStats[city].totalRevenue -= amt;
+        }
       }
     }
 

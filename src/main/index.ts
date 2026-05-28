@@ -146,6 +146,7 @@ import { DashboardController } from './controllers/DashboardController';
 import { ImageController } from './controllers/ImageController';
 import { SettingsController } from './controllers/SettingsController';
 import { EventController } from './controllers/EventController';
+import { ExtraordinaryMovementController } from './controllers/ExtraordinaryMovementController';
 
 ipcMain.handle('settings:get', SettingsController.get);
 ipcMain.handle('settings:upsert', SettingsController.upsert);
@@ -214,6 +215,10 @@ ipcMain.handle('events:update', EventController.update);
 ipcMain.handle('events:delete', EventController.delete);
 ipcMain.handle('events:getActive', EventController.getActive);
 ipcMain.handle('events:endActive', EventController.endActive);
+
+ipcMain.handle('extraordinaryMovements:getByEventId', ExtraordinaryMovementController.getByEventId);
+ipcMain.handle('extraordinaryMovements:create', ExtraordinaryMovementController.create);
+ipcMain.handle('extraordinaryMovements:delete', ExtraordinaryMovementController.delete);
 
 ipcMain.handle('printer:getPrinters', async (event) => {
   return await event.sender.getPrintersAsync();

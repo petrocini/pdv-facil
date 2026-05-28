@@ -34,6 +34,16 @@ declare global {
     created_at: string | Date;
   }
 
+  interface ExtraordinaryMovement {
+    id: string;
+    event_id: string;
+    type: 'entrada' | 'saida';
+    amount: number | string;
+    description: string;
+    payment_method?: string;
+    created_at: string | Date;
+  }
+
   interface Window {
     api: {
       app: {
@@ -96,6 +106,11 @@ declare global {
         delete: (id: string) => Promise<ApiResponse<Event>>;
         getActive: () => Promise<ApiResponse<Event | null>>;
         endActive: () => Promise<ApiResponse<Event>>;
+      };
+      extraordinaryMovements: {
+        getByEventId: (eventId: string) => Promise<ApiResponse<ExtraordinaryMovement[]>>;
+        create: (data: { event_id: string; type: 'entrada' | 'saida'; amount: number; description: string; payment_method?: string }) => Promise<ApiResponse<ExtraordinaryMovement>>;
+        delete: (id: string) => Promise<ApiResponse<ExtraordinaryMovement>>;
       };
       updater: {
         quitAndInstall: () => Promise<void>;

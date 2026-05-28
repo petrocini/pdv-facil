@@ -66,4 +66,21 @@ export async function initializeDatabase() {
   try {
     await prisma.$queryRawUnsafe(`ALTER TABLE orders ADD COLUMN event_id TEXT REFERENCES events("id");`);
   } catch (e) {}
+
+  try {
+    await prisma.$queryRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "extraordinary_movements" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "event_id" TEXT NOT NULL,
+        "type" TEXT NOT NULL,
+        "amount" DECIMAL NOT NULL,
+        "description" TEXT NOT NULL,
+        "payment_method" TEXT,
+        "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY ("event_id") REFERENCES "events" ("id") ON DELETE CASCADE
+      );
+    `);
+  } catch (e) {
+    logger.error('Erro ao criar tabela extraordinary_movements:', e);
+  }
 }

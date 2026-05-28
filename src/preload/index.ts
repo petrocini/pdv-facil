@@ -79,6 +79,11 @@ contextBridge.exposeInMainWorld('api', {
     getActive: () => ipcRenderer.invoke('events:getActive'),
     endActive: () => ipcRenderer.invoke('events:endActive')
   },
+  extraordinaryMovements: {
+    getByEventId: (eventId: string) => ipcRenderer.invoke('extraordinaryMovements:getByEventId', eventId),
+    create: (data: any) => ipcRenderer.invoke('extraordinaryMovements:create', data),
+    delete: (id: string) => ipcRenderer.invoke('extraordinaryMovements:delete', id)
+  },
   printer: {
     getPrinters: () => ipcRenderer.invoke('printer:getPrinters'),
     printSilent: (options: any) => ipcRenderer.invoke('printer:printSilent', options)
