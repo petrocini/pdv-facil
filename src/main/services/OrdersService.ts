@@ -19,7 +19,7 @@ export const OrdersService = {
           }
         },
         orderBy: {
-          ticket_number: 'desc'
+          created_at: 'desc'
         }
       });
 
@@ -85,7 +85,7 @@ export const OrdersService = {
         }
       },
       orderBy: {
-        ticket_number: 'desc'
+        created_at: 'desc'
       }
     });
 
