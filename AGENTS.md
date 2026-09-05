@@ -4,25 +4,24 @@
 
 - PDV desktop offline-first para comércio de balcão e food trucks itinerantes, construído com Electron + React.
 - Cobre catálogo de produtos, frente de caixa com adicionais, impressão térmica 80mm, gestão de eventos/cidades, dashboard analítico e auto-update.
-- Documentação técnica completa em `/docs`. Homepage: <https://criativapdv.com>
 
 ## 2. Stack técnica
 
-| Camada | Tecnologia | Versão mínima |
-|---|---|---|
-| Runtime | Electron | 29 |
-| Frontend | React 18 + Vite 5 + TailwindCSS 3.4 | Node 20+ |
-| Roteamento | React Router DOM 7 (`HashRouter`) | — |
-| Estado global | Zustand 4 | — |
-| Formulários | React Hook Form 7 + Zod 4 | — |
-| Gráficos | Recharts 3 | — |
-| Backend local | Node.js (Main Process) | — |
-| ORM / Banco | Prisma 5.10 + SQLite 3 (WAL mode) | — |
-| Processamento de imagem | Sharp 0.34 | — |
-| Logging | electron-log 5 | — |
-| Auto-update | electron-updater 6 | — |
-| Build/empacotamento | electron-builder 24 (NSIS) | — |
-| CI | GitHub Actions (`windows-latest`, Node 20) | — |
+| Camada                  | Tecnologia                                 | Versão mínima |
+| ----------------------- | ------------------------------------------ | ------------- |
+| Runtime                 | Electron                                   | 29            |
+| Frontend                | React 18 + Vite 5 + TailwindCSS 3.4        | Node 20+      |
+| Roteamento              | React Router DOM 7 (`HashRouter`)          | —             |
+| Estado global           | Zustand 4                                  | —             |
+| Formulários             | React Hook Form 7 + Zod 4                  | —             |
+| Gráficos                | Recharts 3                                 | —             |
+| Backend local           | Node.js (Main Process)                     | —             |
+| ORM / Banco             | Prisma 5.10 + SQLite 3 (WAL mode)          | —             |
+| Processamento de imagem | Sharp 0.34                                 | —             |
+| Logging                 | electron-log 5                             | —             |
+| Auto-update             | electron-updater 6                         | —             |
+| Build/empacotamento     | electron-builder 24 (NSIS)                 | —             |
+| CI                      | GitHub Actions (`windows-latest`, Node 20) | —             |
 
 ## 3. Estrutura de pastas
 
@@ -60,15 +59,15 @@
 
 ## 4. Comandos essenciais
 
-| Ação | Comando |
-|---|---|
-| Instalar dependências | `npm install` (gera Prisma Client via `postinstall`) |
-| Regenerar Prisma Client | `npx prisma generate` |
-| Dev (Vite + Electron) | `npm run dev` |
-| Build de produção | `npm run build` |
-| Empacotamento (NSIS) | `npm run dist` |
-| Lint / Formatter | <TODO: não há ESLint/Prettier configurado — adicionar se necessário> |
-| Testes | <TODO: não há framework de testes configurado> |
+| Ação                    | Comando                                                              |
+| ----------------------- | -------------------------------------------------------------------- |
+| Instalar dependências   | `npm install` (gera Prisma Client via `postinstall`)                 |
+| Regenerar Prisma Client | `npx prisma generate`                                                |
+| Dev (Vite + Electron)   | `npm run dev`                                                        |
+| Build de produção       | `npm run build`                                                      |
+| Empacotamento (NSIS)    | `npm run dist`                                                       |
+| Lint / Formatter        | <TODO: não há ESLint/Prettier configurado — adicionar se necessário> |
+| Testes                  | <TODO: não há framework de testes configurado>                       |
 
 ## 5. Convenções de código
 
@@ -119,18 +118,18 @@ Nunca misture a atualização de docs no mesmo commit da mudança de código.
 
 **Referência rápida — qual doc consultar:**
 
-| Situação | Documento |
-|---|---|
-| Arquitetura Electron, processos, IPC, segurança | `docs/01-architecture/system-overview.md` |
-| Schema de banco, tabelas, migrações, transações | `docs/01-architecture/database-schema.md` |
-| Impressão térmica 80mm, layouts, CSS print | `docs/01-architecture/hardware-and-printing.md` |
-| Categorias, produtos, adicionais, clonagem | `docs/02-domains/catalog-spec.md` |
-| PDV, carrinho, pricing, pagamento, histórico | `docs/02-domains/pos-and-orders-spec.md` |
-| Eventos, overlap, vínculo retroativo, caixa | `docs/02-domains/events-and-movements-spec.md` |
-| Dashboard, KPIs, rankings, comparativos | `docs/02-domains/analytics-and-dashboard-spec.md` |
-| Settings, imagens Sharp/WebP, protocolo local:// | `docs/03-operations/settings-and-storage-spec.md` |
-| SemVer, CI/CD, electron-builder, auto-update | `docs/03-operations/release-and-update-spec.md` |
-| Invariantes invioláveis, regras para agentes | `docs/04-ai-context/system-invariants-and-rules.md` |
+| Situação                                         | Documento                                           |
+| ------------------------------------------------ | --------------------------------------------------- |
+| Arquitetura Electron, processos, IPC, segurança  | `docs/01-architecture/system-overview.md`           |
+| Schema de banco, tabelas, migrações, transações  | `docs/01-architecture/database-schema.md`           |
+| Impressão térmica 80mm, layouts, CSS print       | `docs/01-architecture/hardware-and-printing.md`     |
+| Categorias, produtos, adicionais, clonagem       | `docs/02-domains/catalog-spec.md`                   |
+| PDV, carrinho, pricing, pagamento, histórico     | `docs/02-domains/pos-and-orders-spec.md`            |
+| Eventos, overlap, vínculo retroativo, caixa      | `docs/02-domains/events-and-movements-spec.md`      |
+| Dashboard, KPIs, rankings, comparativos          | `docs/02-domains/analytics-and-dashboard-spec.md`   |
+| Settings, imagens Sharp/WebP, protocolo local:// | `docs/03-operations/settings-and-storage-spec.md`   |
+| SemVer, CI/CD, electron-builder, auto-update     | `docs/03-operations/release-and-update-spec.md`     |
+| Invariantes invioláveis, regras para agentes     | `docs/04-ai-context/system-invariants-and-rules.md` |
 
 ## 9. Testes
 
@@ -159,6 +158,7 @@ Nunca misture a atualização de docs no mesmo commit da mudança de código.
 ## 12. Quando pedir confirmação ao usuário
 
 Pare e pergunte antes de:
+
 - Alterar `prisma/schema.prisma` ou o mecanismo de migrações em `src/main/database/prisma.ts`.
 - Remover/renomear arquivos existentes.
 - Adicionar ou remover dependências de produção (`dependencies` no `package.json`).
