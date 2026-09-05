@@ -12,6 +12,7 @@
   "build": {
     "appId": "com.pdvfacil.desktop",
     "productName": "PDV Fácil",
+    "artifactName": "pdv-facil-setup-${version}.${ext}",
     "publish": [
       {
         "provider": "github",

@@ -1,13 +1,19 @@
 name: Build & Release
 
 on:
-  push:
-    tags:
-      - 'v*'  # Dispara apenas quando você cria uma tag como v1.1.0, v1.2.0, etc.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'SemVer version to release, without the v prefix (example: 1.1.1)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Optional release notes'
+        required: false
+        type: string
 
-# Garante que apenas um build rode por vez
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-main
   cancel-in-progress: true
 
 jobs:
@@ -20,6 +26,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,13 +36,63 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Validate release version
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          $version = $env:RELEASE_VERSION
+          if ($version -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') {
+            throw "Version must be SemVer without the v prefix. Received: $version"
+          }
+          if (git rev-parse "v$version" 2>$null) {
+            throw "Tag v$version already exists."
+          }
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Update package version
+        run: npm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Commit and tag release
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore(release): v$env:RELEASE_VERSION"
+          git tag "v$env:RELEASE_VERSION"
+          git push origin main
+          git push origin "v$env:RELEASE_VERSION"
 
       - name: Build production (Vite + TypeScript)
         run: npm run build
 
-      - name: Package & Publish GitHub Release
+      - name: Package Windows installer
+        run: npx electron-builder --win --publish never
+
+      - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --win --publish always
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_NOTES: ${{ inputs.release_notes }}
+        shell: pwsh
+        run: |
+          $version = $env:RELEASE_VERSION
+          $notes = $env:RELEASE_NOTES
+          $notesFile = New-TemporaryFile
+          if ([string]::IsNullOrWhiteSpace($notes)) {
+            "Release v$version" | Set-Content -Encoding UTF8 $notesFile
+          } else {
+            $notes | Set-Content -Encoding UTF8 $notesFile
+          }
+          gh release create "v$version" `
+            --repo "${{ github.repository }}" `
+            --title "v$version" `
+            --notes-file $notesFile `
+            "build-release/pdv-facil-setup-$version.exe" `
+            "build-release/pdv-facil-setup-$version.exe.blockmap" `
+            "build-release/latest.yml"
