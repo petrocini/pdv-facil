@@ -19,17 +19,18 @@ sequenceDiagram
     participant Rel as GitHub Releases (Assets)
     participant ClientApp as PDV Fácil (Desktop do Cliente)
 
-    Dev->>Git: Cria e envia tag 'v1.1.0'
-    Git->>GHA: Dispara workflow .github/workflows/release.yml
+    Dev->>Git: Executa workflow manual informando version=1.1.1
+    Git->>GHA: Dispara .github/workflows/release.yml via workflow_dispatch
+    GHA->>Git: Atualiza package.json/package-lock.json e cria tag v1.1.1
     GHA->>GHA: npm ci && npm run build
-    GHA->>GHA: electron-builder --win --publish always
-    GHA->>Rel: Publica 'latest.yml' + 'PDV Facil Setup 1.1.0.exe'
+    GHA->>GHA: electron-builder --win --publish never
+    GHA->>Rel: Publica latest.yml + pdv-facil-setup-1.1.1.exe
     
     Note over ClientApp,Rel: Inicialização do PDV no cliente
     ClientApp->>Rel: Consulta silenciosa a latest.yml
-    Rel-->>ClientApp: Identifica nova versão (v1.1.0 > v1.0.0)
+    Rel-->>ClientApp: Identifica nova versão (v1.1.1 > v1.0.0)
     ClientApp->>ClientApp: Baixa instalador em background via electron-updater
-    ClientApp->>ClientApp: Exibe Sonner Toast: "Atualização baixada (v1.1.0)"
+    ClientApp->>ClientApp: Exibe Sonner Toast: "Atualização baixada (v1.1.1)"
     ClientApp->>ClientApp: Operador clica em "Reiniciar Agora" ou fecha o app
     ClientApp->>ClientApp: Substitui binários preservando o banco SQLite intacto
 ```
@@ -44,7 +45,7 @@ O projeto adota o **Semantic Versioning (SemVer 2.0.0)** (`MAJOR.MINOR.PATCH`):
 - **PATCH**: Correções de defeitos ou falhas de estabilidade sem adição de features.
 
 ### 2.1. Estrutura de Branches
-- **`main`**: Código em produção. Cada commit na `main` corresponde estritamente a uma versão empacotada acompanhada de tag git (ex: `v1.2.0`).
+- **`main`**: Código apto para produção. Quando uma versão deve ser distribuída, o workflow manual cria um commit de versionamento em `main`, uma tag git correspondente (ex: `v1.2.0`) e uma GitHub Release.
 - **`develop`**: Ramificação de integração contínua para próximas releases.
 - **`feature/*`**: Ramificações isoladas para novas tarefas, integradas à `develop` via Pull Request.
 - **`hotfix/*`**: Correções emergenciais que partem da `main` e são reintegradas simultaneamente na `main` e na `develop`.
@@ -53,18 +54,25 @@ O projeto adota o **Semantic Versioning (SemVer 2.0.0)** (`MAJOR.MINOR.PATCH`):
 
 ## 3. Automação CI/CD no GitHub Actions
 
-O workflow `.github/workflows/release.yml` garante reprodutibilidade total das compilações de distribuição:
+O workflow `.github/workflows/release.yml` garante reprodutibilidade total das compilações de distribuição e é executado manualmente pelo GitHub Actions, recebendo a versão SemVer desejada como input.
 
 ```yaml
 name: Build & Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'SemVer version to release, without the v prefix (example: 1.1.1)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Optional release notes'
+        required: false
+        type: string
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-main
   cancel-in-progress: true
 
 jobs:
@@ -86,20 +94,45 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Update package version
+        run: npm version ${{ inputs.version }} --no-git-tag-version
+
+      - name: Commit and tag release
+        run: |
+          git add package.json package-lock.json
+          git commit -m "chore(release): v${{ inputs.version }}"
+          git tag "v${{ inputs.version }}"
+          git push origin main
+          git push origin "v${{ inputs.version }}"
+
       - name: Build production (Vite + TypeScript)
         run: npm run build
 
-      - name: Package & Publish GitHub Release
+      - name: Package Windows installer
+        run: npx electron-builder --win --publish never
+
+      - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx electron-builder --win --publish always
+        run: gh release create "v${{ inputs.version }}" build-release/*.exe build-release/*.blockmap build-release/latest.yml
 ```
+
+### 3.1. Operação do Release Manual
+1. O operador acessa **Actions → Build & Release → Run workflow** no GitHub.
+2. Informa `version` sem prefixo `v` (ex.: `1.1.1`) e, opcionalmente, `release_notes`.
+3. O workflow valida que a tag `v<version>` ainda não existe.
+4. O próprio workflow atualiza `package.json` e `package-lock.json` com `npm version --no-git-tag-version`, commita essa alteração em `main`, cria a tag e envia ambos para o GitHub.
+5. O instalador Windows é gerado e anexado à GitHub Release junto com o `.blockmap` e o `latest.yml`.
+6. O download manual deve ser feito pela página da Release criada; o auto-update usa o `latest.yml` publicado nessa mesma Release.
 
 ---
 
 ## 4. Configuração do Empacotador (`electron-builder`)
 
 Configurado no `package.json` para gerar instaladores otimizados para estações de trabalho:
+
+### 4.0. Nome dos Artefatos
+- **`artifactName: "pdv-facil-setup-${version}.${ext}"`**: força nomes ASCII previsíveis para o instalador, o `.blockmap` e o caminho referenciado por `latest.yml`, evitando divergência entre o arquivo anexado à Release e o manifesto consumido pelo `electron-updater`.
 
 ### 4.1. Instalador NSIS (Windows)
 - **`oneClick: true`**: Instalação sem assistentes complexos, agilizando o setup em terminais de ponto de venda.
@@ -125,7 +158,7 @@ A atualização do software é gerenciada pelo `UpdaterService` (`src/main/servi
    ```typescript
    autoUpdater.checkForUpdatesAndNotify();
    ```
-2. O sistema compara a versão local do `package.json` contra o manifesto `latest.yml` hospedado no repositório GitHub configurado (`petrocini/pdv-facil`).
+2. O sistema compara a versão local do aplicativo contra o manifesto `latest.yml` publicado na última GitHub Release do repositório configurado (`petrocini/pdv-facil`).
 
 ### 5.2. Notificação e Aplicação da Atualização
 1. Ao concluir o download em segundo plano, o Main Process emite o evento `updater:downloaded` para a janela do Renderer.
