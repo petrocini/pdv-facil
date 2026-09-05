@@ -396,13 +396,16 @@ export const DashboardService = {
   },
 
   async getEventComparison(filters?: { startDate?: string; endDate?: string }) {
+    const hasDateFilter = !!(filters?.startDate || filters?.endDate);
     const { start, end } = getDateRange(filters);
 
     const events = await prisma.events.findMany({
       where: {
-        start_date: { lte: end },
-        end_date: { gte: start },
-        is_active: true
+        is_active: true,
+        ...(hasDateFilter ? {
+          start_date: { lte: end },
+          end_date: { gte: start }
+        } : {})
       },
       include: {
         orders: {
@@ -611,13 +614,16 @@ export const DashboardService = {
   },
 
   async getCityRanking(filters?: { startDate?: string; endDate?: string }) {
+    const hasDateFilter = !!(filters?.startDate || filters?.endDate);
     const { start, end } = getDateRange(filters);
 
     const events = await prisma.events.findMany({
       where: {
-        start_date: { lte: end },
-        end_date: { gte: start },
-        is_active: true
+        is_active: true,
+        ...(hasDateFilter ? {
+          start_date: { lte: end },
+          end_date: { gte: start }
+        } : {})
       },
       include: {
         orders: {

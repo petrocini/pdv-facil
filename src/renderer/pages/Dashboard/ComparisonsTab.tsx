@@ -86,15 +86,17 @@ export default function ComparisonsTab({ filters }: { filters: Filters }) {
         {loading ? (
           <div className="h-[300px] flex items-center justify-center text-gray-400">Carregando gráfico...</div>
         ) : eventComparison.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={eventComparison} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis dataKey="eventName" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} tickFormatter={(val) => `R$ ${val}`} />
-              <Tooltip formatter={(value: number) => formatCurrency(value)} />
-              <Bar dataKey="totalRevenue" fill="#a855f7" radius={[4, 4, 0, 0]} name="Receita" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="w-full h-[300px] relative">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+              <BarChart data={eventComparison} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="eventName" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} tickFormatter={(val) => `R$ ${val}`} />
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Bar dataKey="totalRevenue" fill="#a855f7" radius={[4, 4, 0, 0]} name="Receita" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         ) : (
            <div className="h-[300px] flex items-center justify-center text-gray-400">Nenhum evento encontrado no período.</div>
         )}
